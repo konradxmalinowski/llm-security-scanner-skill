@@ -17,7 +17,9 @@ jobs:
 
       - name: Build sdist and wheel
         run: |
-          pip install --no-cache-dir build
+          # PyYAML is needed by the version-consistency check below, which reads the
+          # version out of SKILL.md's YAML frontmatter.
+          pip install --no-cache-dir build PyYAML
           python -m build
 
       - name: Verify tag matches package version

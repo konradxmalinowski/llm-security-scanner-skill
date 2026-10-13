@@ -28,7 +28,13 @@ from llm_scanner_skill.config import (
 )
 from llm_scanner_skill.envelope import ENVELOPE_SCHEMA_VERSION
 from llm_scanner_skill.inspect import inspect_project
-from llm_scanner_skill.install import PLATFORM_PATHS, install, skill_source_dir, uninstall
+from llm_scanner_skill.install import (
+    PLATFORM_PATHS,
+    install,
+    install_destination,
+    skill_source_dir,
+    uninstall,
+)
 from llm_scanner_skill.remediation import CATEGORY_TITLES, guidance_for_category
 from llm_scanner_skill.summarize import summarize_report_file
 
@@ -291,11 +297,38 @@ def _cmd_doctor(ollama_host: str | None) -> int:
 
 
 def _cmd_install(args: argparse.Namespace) -> int:
+    """Install the skill, tolerating platforms that share a destination.
+
+    'claude' and 'codex' both resolve to `.agents/skills`, so with --platform all the
+    same directory is named twice. Destinations are therefore resolved up front and
+    deduplicated: the first platform installs, and the rest report that shared path as
+    already covered. Treating the second one as a FileExistsError would make
+    --platform all fail by design.
+    """
     platforms = sorted(PLATFORM_PATHS) if args.platform == "all" else [args.platform]
     results: list[dict[str, Any]] = []
     exit_code = _EXIT_OK
-    seen: set[Path] = set()
+    installed: dict[Path, str] = {}
+
     for platform in platforms:
+        try:
+            dest = install_destination(platform, args.scope, args.project_root)
+        except ValueError as exc:
+            results.append({"platform": platform, "ok": False, "detail": str(exc)})
+            exit_code = _EXIT_ERROR
+            continue
+
+        if dest in installed:
+            results.append(
+                {
+                    "platform": platform,
+                    "ok": True,
+                    "path": str(dest),
+                    "action": f"shares this path with '{installed[dest]}'; already installed",
+                }
+            )
+            continue
+
         try:
             dest, action = install(
                 platform,
@@ -304,29 +337,13 @@ def _cmd_install(args: argparse.Namespace) -> int:
                 mode=args.mode,
                 force=args.force,
             )
-        except FileExistsError as exc:
-            # 'claude' and 'codex' can resolve to the same .agents path; a second
-            # install there is a no-op, not a failure.
-            results.append({"platform": platform, "ok": False, "detail": str(exc)})
-            exit_code = _EXIT_ERROR
-        except (ValueError, FileNotFoundError, OSError) as exc:
+        except (FileExistsError, ValueError, FileNotFoundError, OSError) as exc:
             results.append({"platform": platform, "ok": False, "detail": str(exc)})
             exit_code = _EXIT_ERROR
         else:
-            if dest in seen:
-                results.append(
-                    {
-                        "platform": platform,
-                        "ok": True,
-                        "path": str(dest),
-                        "action": "already installed at this shared path",
-                    }
-                )
-            else:
-                seen.add(dest)
-                results.append(
-                    {"platform": platform, "ok": True, "path": str(dest), "action": action}
-                )
+            installed[dest] = platform
+            results.append({"platform": platform, "ok": True, "path": str(dest), "action": action})
+
     _emit({"schema_version": "1.0", "scope": args.scope, "results": results})
     return exit_code
 

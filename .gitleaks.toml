@@ -1,24 +1,27 @@
 # gitleaks configuration.
 #
-# This repository documents credential FORMATS -- the sanitizer's regexes, and the
-# test fixtures that prove they fire. Those are deliberate non-secrets, so they are
-# allowlisted by path rather than by weakening the rules themselves.
+# This repository documents credential FORMATS -- the sanitizer's detection regexes,
+# and the test fixtures that prove they fire. Those are deliberate non-secrets, so
+# they are allowlisted by path rather than by weakening the rules themselves.
+#
+# NOTE: a single [allowlist] map, not [[allowlist]] array-of-tables. The array form
+# is rejected by current gitleaks with "'Allowlist' expected a map, got 'slice'".
 
 [extend]
 useDefault = true
 
-[[allowlist]]
-description = "Sanitizer secret-detection patterns (regex source, not credentials)"
-paths = ['''src/llm_scanner_skill/sanitize\.py''']
-
-[[allowlist]]
-description = "Test fixtures that assert the secret detectors fire"
-paths = ['''tests/test_sanitize\.py''', '''tests/test_summarize\.py''', '''tests/conftest\.py''']
-
-[[allowlist]]
-description = "Documented example credential shapes in reference material"
-paths = ['''skills/llm-security-scan/references/.*\.md''', '''docs/.*\.md''']
-
-[[allowlist]]
-description = "Canonical AWS documentation example key"
-regexes = ['''AKIAIOSFODNN7EXAMPLE''']
+[allowlist]
+description = "Documented credential formats: detector regexes, test fixtures, and reference material"
+paths = [
+  '''src/llm_scanner_skill/sanitize\.py''',
+  '''tests/test_sanitize\.py''',
+  '''tests/test_summarize\.py''',
+  '''tests/conftest\.py''',
+  '''skills/llm-security-scan/references/.*\.md''',
+  '''docs/.*\.md''',
+]
+regexes = [
+  '''AKIAIOSFODNN7EXAMPLE''',          # the canonical AWS documentation example key
+  '''sk-admin-[0-9a-f]{32}''',         # fabricated key in the validation walkthrough
+  '''LLMSCAN-CANARY-[0-9a-f]{32}''',   # scanner canary tokens, not credentials
+]

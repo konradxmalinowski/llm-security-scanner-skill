@@ -11,8 +11,27 @@ permissions:
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    # Skipped until RELEASE_PLEASE_TOKEN exists, so a fresh clone or fork is not
+    # permanently red over a secret it was never given. See CONTRIBUTING.md for the
+    # one-time setup. A secret cannot be referenced in a job-level `if`, so the
+    # presence check is a step.
     steps:
+      - name: Check for the release-please token
+        id: check
+        env:
+          TOKEN: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::RELEASE_PLEASE_TOKEN is not set; skipping release automation." \
+                 "Add a fine-grained PAT (Contents + Pull requests, read/write on this repo)" \
+                 "to enable it. See CONTRIBUTING.md."
+          else
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: googleapis/release-please-action@v4
+        if: steps.check.outputs.present == 'true'
         id: release
         with:
           # A fine-grained PAT, not the default GITHUB_TOKEN, specifically so the tag

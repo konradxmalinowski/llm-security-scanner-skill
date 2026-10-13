@@ -31,6 +31,7 @@ __all__ = [
     "PLATFORM_PATHS",
     "SKILL_NAME",
     "install",
+    "install_destination",
     "skill_source_dir",
     "uninstall",
 ]
@@ -62,6 +63,16 @@ def skill_source_dir() -> Path:
     raise FileNotFoundError(
         f"Could not locate the bundled skill directory. Expected {packaged} or {repo}."
     )
+
+
+def install_destination(platform: str, scope: str = "user", project_root: str | Path = ".") -> Path:
+    """Where *platform* would install, without installing.
+
+    Public because several platforms deliberately share a destination -- 'claude' and
+    'codex' both resolve to `.agents/skills` -- and a caller installing for several at
+    once needs to deduplicate before it starts rather than hit a FileExistsError.
+    """
+    return _target_dir(platform, scope, Path(project_root).resolve())
 
 
 def _target_dir(platform: str, scope: str, project_root: Path) -> Path:

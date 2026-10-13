@@ -10,6 +10,7 @@ from llm_scanner_skill.install import (
     PLATFORM_PATHS,
     SKILL_NAME,
     install,
+    install_destination,
     skill_source_dir,
     uninstall,
 )
@@ -106,3 +107,86 @@ def test_installed_skill_is_fully_usable(tmp_path: Path) -> None:
         "agents/openai.yaml",
     ):
         assert (dest / rel).is_file(), f"missing {rel} in the installed skill"
+
+
+class TestSharedDestinations:
+    """Several platforms deliberately resolve to the same directory.
+
+    'claude' and 'codex' both use `.agents/skills`, so `--platform all` names that
+    path twice. Before the destinations were deduplicated up front, the second
+    install raised FileExistsError and made `--platform all` fail by design. Caught
+    by CI on the first push.
+    """
+
+    def test_install_destination_resolves_without_installing(self, tmp_path: Path) -> None:
+        dest = install_destination("agents", scope="project", project_root=tmp_path)
+        assert dest == tmp_path / ".agents" / "skills" / SKILL_NAME
+        assert not dest.exists()
+
+    def test_install_destination_rejects_an_unknown_platform(self) -> None:
+        with pytest.raises(ValueError, match="Unknown platform"):
+            install_destination("copilot")
+
+    def test_platform_all_succeeds_despite_a_shared_path(self, tmp_path: Path) -> None:
+        from llm_scanner_skill.cli import main
+
+        rc = main(
+            [
+                "install",
+                "--platform",
+                "all",
+                "--scope",
+                "project",
+                "--project-root",
+                str(tmp_path),
+                "--mode",
+                "copy",
+            ]
+        )
+        assert rc == 0, "--platform all must not fail on a shared destination"
+
+    def test_shared_path_is_reported_as_shared_not_as_an_error(
+        self, tmp_path: Path, capsys
+    ) -> None:
+        import json
+
+        from llm_scanner_skill.cli import main
+
+        main(
+            [
+                "install",
+                "--platform",
+                "all",
+                "--scope",
+                "project",
+                "--project-root",
+                str(tmp_path),
+                "--mode",
+                "copy",
+            ]
+        )
+        results = json.loads(capsys.readouterr().out)["results"]
+        by_platform = {r["platform"]: r for r in results}
+        assert all(r["ok"] for r in results), results
+        # 'agents' installs; 'codex' reports the same path as already covered.
+        assert "shares this path" in by_platform["codex"]["action"]
+        assert by_platform["agents"]["action"] == "copied"
+
+    def test_every_distinct_destination_really_gets_the_skill(self, tmp_path: Path) -> None:
+        from llm_scanner_skill.cli import main
+
+        main(
+            [
+                "install",
+                "--platform",
+                "all",
+                "--scope",
+                "project",
+                "--project-root",
+                str(tmp_path),
+                "--mode",
+                "copy",
+            ]
+        )
+        for rel in (".agents/skills", ".claude/skills", ".gemini/skills"):
+            assert (tmp_path / rel / SKILL_NAME / "SKILL.md").is_file(), rel

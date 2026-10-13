@@ -101,6 +101,21 @@ Releases are automatic:
 
 Never bump a version by hand — the release workflow fails on a mismatch.
 
+### One-time repository setup
+
+Two things must be configured by hand before releases work. Until they are, the
+`release-please` job skips itself with a notice rather than failing, and `release.yml`
+fails at the publish step.
+
+1. **`RELEASE_PLEASE_TOKEN`** — a fine-grained PAT scoped to *Contents* and *Pull
+   requests* (read/write) on this repository only, added as a repository secret. The
+   default `GITHUB_TOKEN` is deliberately not used: a tag it creates would not trigger
+   `release.yml`, so no release would ever publish.
+2. **PyPI trusted publishing** — register a pending publisher on PyPI for
+   `llm-security-scanner-skill` (owner `konradxmalinowski`, repo
+   `llm-security-scanner-skill`, workflow `release.yml`, environment `pypi`), and create a
+   GitHub environment named `pypi`. No API token is stored anywhere; publishing uses OIDC.
+
 ## Keeping up with the scanner
 
 A nightly job runs the contract tests against the latest `llm-security-scanner` release
