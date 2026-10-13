@@ -42,29 +42,41 @@ CATEGORY_TITLES: dict[str, str] = {
 _GUIDANCE: dict[str, dict[str, Any]] = {
     "LLM01": {
         "root_causes": [
-            "Untrusted text is concatenated into the same prompt as trusted instructions, "
-            "with nothing marking the boundary.",
-            "Retrieved documents, tool results, or fetched web content are treated as "
-            "instructions rather than data.",
+            (
+                "Untrusted text is concatenated into the same prompt as trusted instructions, "
+                "with nothing marking the boundary."
+            ),
+            (
+                "Retrieved documents, tool results, or fetched web content are treated as "
+                "instructions rather than data."
+            ),
         ],
         "where_to_look": [
-            "The prompt assembly site: f-strings or template joins that mix a system "
-            "prompt with request data.",
+            (
+                "The prompt assembly site: f-strings or template joins that mix a system "
+                "prompt with request data."
+            ),
             "RAG context injection, where retrieved chunks are added to the message list.",
             "Tool-result handling, where output is appended to the conversation.",
         ],
         "fix_pattern": [
             "Put untrusted input in a separate user message, never inside the system message.",
-            "Delimit untrusted spans with an unguessable nonce and state in the system "
-            "prompt that content inside them is data and must not be obeyed.",
-            "Enforce the real security boundary outside the model: the LLM's output decides "
-            "nothing that is not re-authorized in code.",
+            (
+                "Delimit untrusted spans with an unguessable nonce and state in the system "
+                "prompt that content inside them is data and must not be obeyed."
+            ),
+            (
+                "Enforce the real security boundary outside the model: the LLM's output decides "
+                "nothing that is not re-authorized in code."
+            ),
             "Validate output against a schema rather than trusting prose.",
         ],
         "verification": [
             "Re-scan LLM01 and confirm previously-vulnerable attack IDs now report safe.",
-            "Add a regression test asserting the canonical override payload does not change "
-            "the response shape.",
+            (
+                "Add a regression test asserting the canonical override payload does not change "
+                "the response shape."
+            ),
         ],
         "limits": "Prompt-level defences reduce but never eliminate injection. Anything that "
         "must not happen has to be impossible in code, not merely discouraged in the prompt.",
@@ -137,15 +149,19 @@ _GUIDANCE: dict[str, dict[str, Any]] = {
             "Generated code, SQL, or shell strings are passed to an interpreter.",
         ],
         "where_to_look": [
-            "`dangerouslySetInnerHTML`, `innerHTML =`, `v-html`, Jinja `| safe`, "
-            "`render_template_string`.",
+            (
+                "`dangerouslySetInnerHTML`, `innerHTML =`, `v-html`, Jinja `| safe`, "
+                "`render_template_string`."
+            ),
             "Any `subprocess`, `eval`, `exec`, or raw SQL built from model output.",
         ],
         "fix_pattern": [
             "Treat model output exactly like user input: context-aware encoding at render time.",
             "Render Markdown through a sanitizer allowlist; never raw HTML.",
-            "Never pass model output to a shell or `eval`. Map it to a fixed set of "
-            "parameterized operations instead.",
+            (
+                "Never pass model output to a shell or `eval`. Map it to a fixed set of "
+                "parameterized operations instead."
+            ),
             "Use parameterized queries, never string-built SQL.",
         ],
         "verification": [
@@ -165,17 +181,23 @@ _GUIDANCE: dict[str, dict[str, Any]] = {
             "Any tool wrapping shell, filesystem, network, email, or payment calls.",
         ],
         "fix_pattern": [
-            "Least privilege per tool: narrow parameters, allowlisted targets, read-only "
-            "where possible.",
-            "Re-check the *caller's* authorization inside each tool, not just at the chat "
-            "entry point -- the model's intent is not an authorization decision.",
+            (
+                "Least privilege per tool: narrow parameters, allowlisted targets, read-only "
+                "where possible."
+            ),
+            (
+                "Re-check the *caller's* authorization inside each tool, not just at the chat "
+                "entry point -- the model's intent is not an authorization decision."
+            ),
             "Require explicit human approval for destructive or irreversible actions.",
             "Cap loop iterations and total tool calls per request.",
         ],
         "verification": [
             "Re-scan LLM06 and confirm each probe is refused.",
-            "Add a test asserting a tool rejects an out-of-scope argument even when the "
-            "model requests it.",
+            (
+                "Add a test asserting a tool rejects an out-of-scope argument even when the "
+                "model requests it."
+            ),
         ],
         "limits": "A scan shows the model *attempted* an action. Whether it would have "
         "succeeded depends on the tool implementation -- read that code.",
@@ -190,13 +212,17 @@ _GUIDANCE: dict[str, dict[str, Any]] = {
         ],
         "fix_pattern": [
             "Design the prompt to be safe when published; assume it will leak.",
-            "Move keys, internal URLs, and business rules out of the prompt into code and "
-            "server-side policy.",
+            (
+                "Move keys, internal URLs, and business rules out of the prompt into code and "
+                "server-side policy."
+            ),
             "Enforce authorization in code, not by instructing the model.",
         ],
         "verification": [
-            "Re-scan LLM07 with a `--canary` token planted in the real system prompt: a "
-            "canary hit is deterministic proof, not a judge opinion.",
+            (
+                "Re-scan LLM07 with a `--canary` token planted in the real system prompt: a "
+                "canary hit is deterministic proof, not a judge opinion."
+            ),
         ],
         "limits": "Refusal training makes extraction harder, never impossible. Treat the "
         "prompt as public.",
@@ -211,11 +237,15 @@ _GUIDANCE: dict[str, dict[str, Any]] = {
             "Index write paths, for who can add documents.",
         ],
         "fix_pattern": [
-            "Apply a mandatory tenant/user filter server-side on every retrieval; never "
-            "let the caller supply it.",
+            (
+                "Apply a mandatory tenant/user filter server-side on every retrieval; never "
+                "let the caller supply it."
+            ),
             "Separate namespaces or collections per tenant.",
-            "Sanitize and delimit retrieved chunks before prompt insertion -- they are "
-            "untrusted data.",
+            (
+                "Sanitize and delimit retrieved chunks before prompt insertion -- they are "
+                "untrusted data."
+            ),
         ],
         "verification": [
             "Re-scan LLM08.",
@@ -229,8 +259,10 @@ _GUIDANCE: dict[str, dict[str, Any]] = {
             "Generated claims are presented as fact with no source or confidence signal.",
         ],
         "where_to_look": [
-            "Response assembly for user-facing answers; any place output is shown without "
-            "citations.",
+            (
+                "Response assembly for user-facing answers; any place output is shown without "
+                "citations."
+            ),
         ],
         "fix_pattern": [
             "Ground answers in retrieved sources and cite them.",

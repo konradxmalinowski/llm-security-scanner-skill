@@ -533,8 +533,10 @@ def _readiness(surface: AttackSurface) -> tuple[str, list[str]]:
     """Decide whether a scan can proceed and what the operator must supply."""
     if not surface.is_llm_application:
         return "not_applicable", [
-            "No LLM SDK, framework, or model call was found. This scanner tests LLM "
-            "behaviour at run time and has nothing to test here.",
+            (
+                "No LLM SDK, framework, or model call was found. This scanner tests LLM "
+                "behaviour at run time and has nothing to test here."
+            ),
             "If the LLM lives in a separate service, inspect that repository instead.",
         ]
 
