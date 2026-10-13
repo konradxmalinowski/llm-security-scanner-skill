@@ -66,7 +66,7 @@ CI fails if `platforms/generic/tools.json` drifts from the server's definitions.
 ## Adding a platform adapter
 
 1. Read the platform's **official** documentation and cite it in `docs/PLATFORMS.md`.
-2. Add install manifests/metadata only — never duplicate the skill.
+2. Add install manifests/metadata only - never duplicate the skill.
 3. Add a `platforms/<name>/README.md` with installation and the platform's exact gaps.
 4. Add assertions to `tests/test_platforms.py` validating the manifest against the
    published format.
@@ -99,7 +99,7 @@ Releases are automatic:
 4. `release.yml` verifies the version is consistent across every manifest, checks the
    wheel really bundles the skill, and publishes to PyPI via trusted publishing (OIDC).
 
-Never bump a version by hand — the release workflow fails on a mismatch.
+Never bump a version by hand - the release workflow fails on a mismatch.
 
 ### One-time repository setup
 
@@ -107,11 +107,11 @@ Two things must be configured by hand before releases work. Until they are, the
 `release-please` job skips itself with a notice rather than failing, and `release.yml`
 fails at the publish step.
 
-1. **`RELEASE_PLEASE_TOKEN`** — a fine-grained PAT scoped to *Contents* and *Pull
+1. **`RELEASE_PLEASE_TOKEN`** - a fine-grained PAT scoped to *Contents* and *Pull
    requests* (read/write) on this repository only, added as a repository secret. The
    default `GITHUB_TOKEN` is deliberately not used: a tag it creates would not trigger
    `release.yml`, so no release would ever publish.
-2. **PyPI trusted publishing** — register a pending publisher on PyPI for
+2. **PyPI trusted publishing** - register a pending publisher on PyPI for
    `llm-security-scanner-skill` (owner `konradxmalinowski`, repo
    `llm-security-scanner-skill`, workflow `release.yml`, environment `pypi`), and create a
    GitHub environment named `pypi`. No API token is stored anywhere; publishing uses OIDC.
@@ -122,7 +122,7 @@ A nightly job runs the contract tests against the latest `llm-security-scanner` 
 and opens a `contract-break` issue on failure. If you pick one up:
 
 1. Read what changed in the scanner.
-2. Update the adapter — usually `adapter._build_argv`, `config.CONFIG_KEYS`, or
+2. Update the adapter - usually `adapter._build_argv`, `config.CONFIG_KEYS`, or
    `envelope._VERDICT_SOURCE_TO_CONFIDENCE`.
 3. Add or adjust the contract assertion so the same break cannot recur silently.
 4. Raise the dependency floor in `pyproject.toml` if the fix needs the newer scanner.

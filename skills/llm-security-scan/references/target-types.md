@@ -21,15 +21,15 @@ and reads the reply as, in order of preference:
 3. the raw response body
 
 Timeouts are connect 5s / read 30s, with `--retries` (default 2) on timeout,
-connection error, and 5xx. A 4xx fails immediately — it is not transient.
+connection error, and 5xx. A 4xx fails immediately - it is not transient.
 
 ### When your app's shape does not match
 
 Most real apps do not accept `{"prompt": ...}`. Do not change the application to suit
-the scanner — put a small test-only adapter in front of it:
+the scanner - put a small test-only adapter in front of it:
 
 ```python
-# scan_adapter.py — run this alongside the app, for scanning only. Never ship it.
+# scan_adapter.py - run this alongside the app, for scanning only. Never ship it.
 from fastapi import FastAPI
 from pydantic import BaseModel
 import httpx
@@ -56,7 +56,7 @@ tell the user it exists.
 ### Preflight
 
 The scanner sends a `HEAD` request first. 401 and 403 pass (the server is up but wants
-auth); 404 and 5xx abort. If your endpoint rejects `HEAD`, that aborts the scan — the
+auth); 404 and 5xx abort. If your endpoint rejects `HEAD`, that aborts the scan - the
 adapter above is the usual fix.
 
 ## `--target-type ollama`
@@ -72,7 +72,7 @@ llm-scanner --target mistral:7b --target-type ollama --judge-model llama3.2:3b
 ```
 
 Use this to measure a **base model's** susceptibility. It tells you nothing about your
-application's prompt, retrieval, tools or output handling — those live in your code, so
+application's prompt, retrieval, tools or output handling - those live in your code, so
 scan the running app via `url` for those.
 
 Pass `--system-prompt @prompts/system.txt` to test your real prompt on that model; the
@@ -100,4 +100,4 @@ leak is `confirmed`. This single step is the highest-value setup change availabl
 | Comparing base models, or no HTTP surface exists | `ollama` |
 | Testing your system prompt's resistance in isolation | `ollama` + `--system-prompt` |
 | App is running in Docker | `url` against the published port |
-| Library with no server | neither — add a thin HTTP harness, or scan the model |
+| Library with no server | neither - add a thin HTTP harness, or scan the model |

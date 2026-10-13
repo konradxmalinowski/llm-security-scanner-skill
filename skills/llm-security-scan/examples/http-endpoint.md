@@ -1,6 +1,6 @@
 # Example: a Flask chatbot on localhost
 
-Target: `demo/vulnerable_app.py` from the scanner repo — a deliberately insecure chatbot
+Target: `demo/vulnerable_app.py` from the scanner repo - a deliberately insecure chatbot
 with secrets in its system prompt. Shipped as a safe thing to practise on.
 
 ## 1. Inspect
@@ -51,7 +51,7 @@ curl -s -X POST http://localhost:5000/chat \
 
 ## 4. Plant a canary
 
-This app has secrets in its system prompt, so LLM07 is the interesting category — and a
+This app has secrets in its system prompt, so LLM07 is the interesting category - and a
 canary turns it from a judge guess into proof.
 
 ```bash
@@ -99,12 +99,12 @@ scripts/scan.py \
 
 How to report it:
 
-> **Confirmed:** `LLM07-001` — the canary token planted in the system prompt came back
+> **Confirmed:** `LLM07-001` - the canary token planted in the system prompt came back
 > verbatim. That is proof by string comparison, not a model opinion. The system prompt
 > leaks, and it contains credentials.
 >
 > Two **likely** findings (detector and judge agree) and four **possible** ones (judge
-> only — worth verifying by hand). Risk score 9.5/10.
+> only - worth verifying by hand). Risk score 9.5/10.
 >
 > LLM03, LLM04, LLM06, LLM08, LLM09 were not scanned and remain untested.
 
@@ -134,5 +134,5 @@ scripts/compare_scans.py reports/<before>/report.json reports/<after>/report.jso
 }
 ```
 
-The canary no longer appears, which is a deterministic result — not a judge opinion that
+The canary no longer appears, which is a deterministic result - not a judge opinion that
 might have flipped by chance.

@@ -6,7 +6,7 @@ and [agent skills doc](https://github.com/google-gemini/gemini-cli/blob/main/doc
 Gemini CLI implements the same [agentskills.io](https://agentskills.io) standard as Claude
 and Codex, so there is no separate skill format to maintain.
 
-## Option A — install as an extension (recommended)
+## Option A - install as an extension (recommended)
 
 The repository root *is* a Gemini extension: `gemini-extension.json` declares the MCP
 server, `GEMINI.md` is its context file, `skills/` holds the skill, and
@@ -17,7 +17,7 @@ gemini extensions install https://github.com/konradxmalinowski/llm-security-scan
 uv pip install 'llm-security-scanner-skill[mcp]'
 ```
 
-Restart the CLI — extension changes only take effect on a new session. Then:
+Restart the CLI - extension changes only take effect on a new session. Then:
 
 ```
 /extensions list
@@ -31,7 +31,7 @@ For local development, symlink instead of reinstalling on every change:
 gemini extensions link /path/to/llm-security-scanner-skill
 ```
 
-## Option B — install the skill only
+## Option B - install the skill only
 
 ```bash
 uv pip install llm-security-scanner-skill
@@ -48,7 +48,7 @@ Gemini CLI reads `.agents/skills/` as an interop alias with precedence over
 
 ## Extension settings
 
-Gemini CLI does **not** pass your full shell environment to an extension — only standard
+Gemini CLI does **not** pass your full shell environment to an extension - only standard
 safe variables plus those declared in the manifest's `settings` array. Two are declared:
 
 | Setting | Env var | Purpose |
@@ -61,7 +61,7 @@ gemini extensions config llm-security-scanner
 ```
 
 If the skill cannot find Ollama inside Gemini CLI but works in your shell, this
-sanitization is why — set `OLLAMA_HOST` through the setting.
+sanitization is why - set `OLLAMA_HOST` through the setting.
 
 ## Limitations vs Claude Code
 
@@ -71,5 +71,5 @@ sanitization is why — set `OLLAMA_HOST` through the setting.
   [geminicli.com/extensions](https://geminicli.com/extensions).
 - **Management commands need a restart**, unlike `/skills reload` for skills alone.
 - **Extension policies cannot grant `allow`.** Gemini ignores `allow` decisions and `yolo`
-  mode from an extension, so this extension ships no `policies/` — the authorization gate
+  mode from an extension, so this extension ships no `policies/` - the authorization gate
   is enforced in the Python layer, where it cannot be configured away.

@@ -1,6 +1,6 @@
 # Troubleshooting
 
-Run `scripts/doctor.py` first — it checks all three prerequisites at once and tells you
+Run `scripts/doctor.py` first - it checks all three prerequisites at once and tells you
 which failed.
 
 ## `scanner_not_found` / `llm-scanner: command not found`
@@ -33,7 +33,7 @@ ollama list                 # what you already have
 
 ## `Judge model and target model cannot be the same`
 
-A model cannot judge itself. Use different models — e.g. target `mistral:7b`, judge
+A model cannot judge itself. Use different models - e.g. target `mistral:7b`, judge
 `llama3.2:3b`.
 
 ## `HTTP target returned 404` at preflight
@@ -87,7 +87,7 @@ The authorization gate refused. Ask the user whether they own the target, then r
 
 ## `blocked` with `requires_ack: false`
 
-A hard refusal — a third-party provider endpoint. Relay the reason and stop.
+A hard refusal - a third-party provider endpoint. Relay the reason and stop.
 
 ## Scan passed but I do not believe it
 
@@ -112,4 +112,4 @@ uv pip install 'llm-security-scanner-skill[mcp]'
 llm-scanner-skill mcp      # should block on stdio, printing nothing
 ```
 
-Nothing on stdout is correct — stdio MCP uses it for the protocol.
+Nothing on stdout is correct - stdio MCP uses it for the protocol.

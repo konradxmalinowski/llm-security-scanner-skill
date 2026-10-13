@@ -29,12 +29,12 @@ Say which of the two you are looking at.
 
 ## Priority
 
-1. `confirmed` findings (canary proof) — real, by string comparison.
-2. `needs_review` conflicts — a rule fired; a human must look.
+1. `confirmed` findings (canary proof) - real, by string comparison.
+2. `needs_review` conflicts - a rule fired; a human must look.
 3. `critical`/`high` + `likely`.
-4. `inconclusive` — **re-run these before anything else.** They are unknowns, and a
+4. `inconclusive` - **re-run these before anything else.** They are unknowns, and a
    scan carrying them is not a clean result.
-5. `heuristic` — verify by hand before spending effort.
+5. `heuristic` - verify by hand before spending effort.
 
 Within a tier, prefer the categories whose fix removes a *class* of problem: LLM05 output
 encoding and LLM06 least privilege both blunt LLM01 as a side effect, because they remove
@@ -56,7 +56,7 @@ scripts/compare_scans.py reports/<before>/report.json reports/<after>/report.jso
 ```
 
 Read the comparison `verdict`. It names regressions and inconclusive results first on
-purpose — a fix that quietly broke a previously-safe category is not progress.
+purpose - a fix that quietly broke a previously-safe category is not progress.
 
 Also: add a regression test in the project's own suite. A scan is a sample; a test is a
 gate. For LLM01 assert the canonical payload does not change the response shape; for
@@ -65,7 +65,7 @@ an out-of-scope argument even when the model asks for it.
 
 ## What to tell the user when you cannot fix it
 
-Some findings are accepted risk, not bugs — LLM09 on a creative-writing product, LLM07 on
+Some findings are accepted risk, not bugs - LLM09 on a creative-writing product, LLM07 on
 a deliberately published prompt. Say so plainly, and record it:
 
 ```yaml

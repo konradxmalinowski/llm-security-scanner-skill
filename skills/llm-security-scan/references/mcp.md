@@ -1,7 +1,7 @@
 # The MCP server
 
 For agents that can call tools but **cannot run a shell**. If your platform can run the
-`scripts/`, use those instead — they are the same code with one less moving part.
+`scripts/`, use those instead - they are the same code with one less moving part.
 
 ```bash
 uv pip install 'llm-security-scanner-skill[mcp]'
@@ -21,7 +21,7 @@ llm-scanner-skill mcp          # stdio transport
 | `summarize_findings` | Parse an existing `report.json` | `summarize` |
 | `get_remediation_guidance` | Fix guidance for a category | `remediate` |
 | `compare_scan_results` | Before/after diff | `compare` |
-| `read_report_excerpt` | One finding's full evidence, fenced as data | — |
+| `read_report_excerpt` | One finding's full evidence, fenced as data | - |
 | `server_info` | Versions and health | `doctor` |
 
 Every one is a few lines that validate input and call the same `llm_scanner_skill`
@@ -30,7 +30,7 @@ the MCP layer.
 
 ## Client configuration
 
-Claude Code — already wired when the plugin is installed. Standalone:
+Claude Code - already wired when the plugin is installed. Standalone:
 
 ```json
 {
@@ -43,7 +43,7 @@ Claude Code — already wired when the plugin is installed. Standalone:
 }
 ```
 
-Gemini CLI — in `gemini-extension.json` (the bundled extension already includes it):
+Gemini CLI - in `gemini-extension.json` (the bundled extension already includes it):
 
 ```json
 {
@@ -57,7 +57,7 @@ Gemini CLI — in `gemini-extension.json` (the bundled extension already include
 }
 ```
 
-Codex — in `~/.codex/config.toml`:
+Codex - in `~/.codex/config.toml`:
 
 ```toml
 [mcp_servers.llm-security-scanner]
@@ -68,7 +68,7 @@ args = ["mcp"]
 ## Safety boundaries the server enforces
 
 - `scan_target` runs the authorization gate first. `authorized` defaults to `false`, so a
-  non-loopback target is refused until the caller sets it — which it must only do after
+  non-loopback target is refused until the caller sets it - which it must only do after
   the user confirms ownership.
 - Third-party provider endpoints are refused regardless of `authorized`.
 - `check_authorization` always reports as if unauthorized, so it is safe to call for

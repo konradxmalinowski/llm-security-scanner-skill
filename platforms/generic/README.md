@@ -4,8 +4,8 @@ Three integration levels, from most to least capable. Nothing here is platform-s
 
 ## 1. Agent Skills standard
 
-If the platform implements [agentskills.io](https://agentskills.io) — directory with a
-`SKILL.md` carrying `name` and `description` frontmatter — copy
+If the platform implements [agentskills.io](https://agentskills.io) - directory with a
+`SKILL.md` carrying `name` and `description` frontmatter - copy
 `skills/llm-security-scan/` into its skill path. That is the whole integration.
 
 `.agents/skills/` is the emerging shared convention; Claude Code, Gemini CLI and Codex all
@@ -33,7 +33,7 @@ since an MCP server alone conveys no workflow.
 
 If the platform has function calling and shell access but neither skills nor MCP:
 
-- Declare the tools from [`tools.json`](tools.json) — OpenAI/Gemini-compatible JSON Schema
+- Declare the tools from [`tools.json`](tools.json) - OpenAI/Gemini-compatible JSON Schema
   function declarations covering every operation.
 - Implement each by shelling out to the matching `llm-scanner-skill` subcommand. The
   mapping is in `tools.json` under each function's `x-command`.

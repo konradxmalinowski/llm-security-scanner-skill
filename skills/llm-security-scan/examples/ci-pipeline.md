@@ -10,7 +10,7 @@ scripts/scan.py --target http://localhost:8000/chat --target-type url \
   --judge-model llama3.2:3b --categories LLM01,LLM02,LLM05,LLM07
 ```
 
-Say the score came out 5.5. Set the gate at 6.0 — above today's reality, so the build is
+Say the score came out 5.5. Set the gate at 6.0 - above today's reality, so the build is
 not red on day one, and ratchet it down as findings are fixed. A threshold you never
 measured either blocks everything or nothing.
 
@@ -68,7 +68,7 @@ jobs:
             --authorized \
             | tee envelope.json
 
-      # if: always() — the reports matter most on the run that failed.
+      # if: always() - the reports matter most on the run that failed.
       - uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
@@ -105,7 +105,7 @@ Check `status` in `envelope.json`:
 - `completed_with_threshold_breach` → the gate fired. Summarize the findings by evidence
   class; do not just paste the score.
 - `completed_untrustworthy` → the judge failed on some attacks. **This is not a pass.**
-  Usually the model was evicted from VRAM — add `--concurrency 1`.
+  Usually the model was evicted from VRAM - add `--concurrency 1`.
 - `blocked` → the authorization gate refused. Check the target in the workflow.
 
 ## 5. A nightly full sweep
@@ -130,5 +130,5 @@ Check `status` in `envelope.json`:
       - run: llm-scanner judge-eval --judge llama3.2:3b --min-kappa 0.4
 ```
 
-Catches an Ollama or model upgrade silently degrading every verdict in the pipeline — the
+Catches an Ollama or model upgrade silently degrading every verdict in the pipeline - the
 failure mode that would otherwise make the whole gate meaningless without anyone noticing.

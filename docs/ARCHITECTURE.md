@@ -4,7 +4,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│ 1. SCANNER  (separate repo + PyPI package — unmodified)             │
+│ 1. SCANNER  (separate repo + PyPI package - unmodified)             │
 │    llm-security-scanner: payloads, Ollama judge, detectors,         │
 │    reconciliation, reporters, baselines, SARIF, judge-eval          │
 └─────────────────────────────────────────────────────────────────────┘
@@ -21,7 +21,7 @@
 └─────────────────────────────────────────────────────────────────────┘
                                  ▲
 ┌─────────────────────────────────────────────────────────────────────┐
-│ 4. PLATFORM ADAPTERS  (manifests and metadata — never knowledge)    │
+│ 4. PLATFORM ADAPTERS  (manifests and metadata - never knowledge)    │
 │    .claude-plugin/ · gemini-extension.json · commands/ ·            │
 │    agents/openai.yaml · AGENTS.md · GEMINI.md · platforms/*/        │
 └─────────────────────────────────────────────────────────────────────┘
@@ -101,11 +101,11 @@ unclassified.
 
 | Scanner | Skill | Why |
 |---|---|---|
-| `rule_proof` | `confirmed` | Canary matched verbatim — proof by string comparison |
+| `rule_proof` | `confirmed` | Canary matched verbatim - proof by string comparison |
 | `both_agree` | `likely` | Rule and judge agree |
 | `judge_only` | `heuristic` | One small local model's opinion |
 | `judge_degraded` | `heuristic` | Same, via a fallback parser |
-| `conflict` | `needs_review` | Rule fired, judge disagreed — surfaced, never resolved |
+| `conflict` | `needs_review` | Rule fired, judge disagreed - surfaced, never resolved |
 | `judge_error` | `inconclusive` | No verdict reached. Not a pass |
 
 `outcome == "error"` forces `inconclusive` regardless of source: there is no verdict to be
@@ -145,7 +145,7 @@ The adapter is thin only because drift is detected rather than hoped against.
   has ≥ 4 payloads; the reporter format set matches. It even builds a real `ScanReport`
   with the scanner's own models and parses it.
 - **`.github/workflows/contract-nightly.yml`** runs those tests against the *latest*
-  scanner release nightly and opens an issue on failure — so a scanner release that breaks
+  scanner release nightly and opens an issue on failure - so a scanner release that breaks
   the contract is caught without a commit here.
 - **`tests/test_platforms.py`** validates every platform manifest against its published
   format, checks that no referenced file is missing, and asserts exactly one `SKILL.md`
@@ -162,7 +162,7 @@ The adapter is thin only because drift is detected rather than hoped against.
 |---|---|---|
 | Startup | ~150 tokens | `name` + `description` only |
 | Activation | ~2 000 tokens | The `SKILL.md` body (~150 lines) |
-| On demand | 1 000–3 000 each | One `references/` or `workflows/` file |
+| On demand | 1 000-3 000 each | One `references/` or `workflows/` file |
 
 Tests enforce the budget: `SKILL.md` ≤ 500 lines, each reference ≤ 250 lines, each script
 ≤ 25 lines, and the always-in-context `AGENTS.md`/`GEMINI.md` ≤ 80 lines each.

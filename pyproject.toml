@@ -1,7 +1,7 @@
 [project]
 name = "llm-security-scanner-skill"
 version = "0.1.0"
-description = "Cross-platform AI agent skill for llm-security-scanner — OWASP Top 10 for LLMs scanning from Claude, Gemini, Codex and MCP"
+description = "Cross-platform AI agent skill for llm-security-scanner - OWASP Top 10 for LLMs scanning from Claude, Gemini, Codex and MCP"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"
@@ -99,14 +99,14 @@ select = [
     "E",    # pycodestyle errors
     "F",    # pyflakes
     "B",    # flake8-bugbear
-    "S",    # flake8-bandit — a security tool self-enforces these
+    "S",    # flake8-bandit - a security tool self-enforces these
     "I",    # isort
     "UP",   # pyupgrade
     "RUF",  # ruff-specific
 ]
 ignore = [
-    "S101",  # assert — used in tests and in narrow invariant checks
-    "E501",  # line length — handled by the formatter
+    "S101",  # assert - used in tests and in narrow invariant checks
+    "E501",  # line length - handled by the formatter
 ]
 
 [tool.ruff.lint.per-file-ignores]

@@ -32,5 +32,5 @@ labels: bug
 If this is about a scan's *findings* rather than the skill layer, it probably belongs on
 [llm-security-scanner](https://github.com/konradxmalinowski/llm-security-scanner/issues).
 
-Do not paste raw target responses or report contents — they may contain credentials or
+Do not paste raw target responses or report contents - they may contain credentials or
 injected content. A redacted excerpt is fine.

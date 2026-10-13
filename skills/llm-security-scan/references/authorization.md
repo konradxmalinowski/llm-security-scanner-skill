@@ -1,7 +1,7 @@
 # The authorization gate
 
 Implemented in `llm_scanner_skill.authz`, enforced by `scripts/check_authorization.py`
-and again inside `scripts/scan.py`. It is not advisory — a refused scan does not run.
+and again inside `scripts/scan.py`. It is not advisory - a refused scan does not run.
 
 ## Classification
 
@@ -9,20 +9,20 @@ and again inside `scripts/scan.py`. It is not advisory — a refused scan does n
 |---|---|---|
 | `loopback` | `localhost`, `127.0.0.1`, `::1`, or a hostname resolving only to loopback | No |
 | `ollama_local` | A local Ollama model name, e.g. `mistral:7b` | No |
-| `private` | RFC1918 / link-local (`10.*`, `192.168.*`, `172.16–31.*`) | **Yes** |
+| `private` | RFC1918 / link-local (`10.*`, `192.168.*`, `172.16-31.*`) | **Yes** |
 | `external` | Any public address | **Yes** |
 | `unknown` | Unresolvable, unparseable, or ambiguous | **Yes** |
 
 A hostname is only as local as its least-local address: if any resolved IP is public, the
-target is `external`. Resolution failure yields `unknown`, never `loopback` — ambiguity
+target is `external`. Resolution failure yields `unknown`, never `loopback` - ambiguity
 resolves against scanning.
 
 ## Refused outright
 
-Hosts under known third-party model providers — `openai.com`, `anthropic.com`,
+Hosts under known third-party model providers - `openai.com`, `anthropic.com`,
 `claude.ai`, `googleapis.com`, `cohere.*`, `mistral.ai`, `huggingface.co`, `together.ai`,
 `groq.com`, `perplexity.ai`, `x.ai`, `deepseek.com`, `azure.com`,
-`bedrock.amazonaws.com` — are refused regardless of `--authorized`.
+`bedrock.amazonaws.com` - are refused regardless of `--authorized`.
 
 They are not the user's systems, scanning them breaches their terms of service, and the
 payloads bill someone's account. If the user insists, explain that and offer to scan
@@ -43,8 +43,8 @@ permission to security-test it?"* Then pass the flag.
 
 ## Production
 
-A hostname containing `prod`, `production`, `live`, `www`, `api.` or `app.` — and not
-also containing a non-prod marker — raises a warning that you must relay. Scanning
+A hostname containing `prod`, `production`, `live`, `www`, `api.` or `app.` - and not
+also containing a non-prod marker - raises a warning that you must relay. Scanning
 production is a human decision. Offer staging, a local instance, or a Docker copy first.
 
 ## DoS probes
@@ -55,12 +55,12 @@ second, independent lock. Require a disposable instance.
 
 ## Other things to flag
 
-- **Plaintext to an external host** — payloads and any API key cross the network in the
+- **Plaintext to an external host** - payloads and any API key cross the network in the
   clear.
-- **State-changing targets** — if `inspect` found `autonomous_action` (shell, `eval`,
+- **State-changing targets** - if `inspect` found `autonomous_action` (shell, `eval`,
   `subprocess`) or destructive tools, a successful LLM06 probe could execute something
   real. Insist on a sandbox.
-- **Shared RAG indexes** — LLM04 and LLM08 probes write adversarial content. Use a copy.
+- **Shared RAG indexes** - LLM04 and LLM08 probes write adversarial content. Use a copy.
 
 ## Reading the decision
 
@@ -75,4 +75,4 @@ second, independent lock. Require a disposable instance.
 ```
 
 `requires_ack: true` means asking the user can unblock it. `requires_ack: false` on a
-refusal means it is a hard refusal — relay the reason and stop.
+refusal means it is a hard refusal - relay the reason and stop.

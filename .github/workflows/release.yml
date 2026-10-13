@@ -74,7 +74,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
-      id-token: write # PyPI trusted publishing (OIDC) — no API token secret needed
+      id-token: write # PyPI trusted publishing (OIDC) - no API token secret needed
     steps:
       - uses: actions/download-artifact@v5
         with:

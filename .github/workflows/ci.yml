@@ -57,7 +57,7 @@ jobs:
         run: |
           python tools/gen_tools_json.py
           git diff --exit-code platforms/generic/tools.json \
-            || { echo "platforms/generic/tools.json is stale — run tools/gen_tools_json.py" >&2; exit 1; }
+            || { echo "platforms/generic/tools.json is stale - run tools/gen_tools_json.py" >&2; exit 1; }
 
       - name: Verify the skill installs for every platform
         run: |

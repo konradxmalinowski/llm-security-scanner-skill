@@ -10,10 +10,10 @@ llm-scanner-skill validate-config examples/config/local-url.yml
 
 | File | Scenario |
 |---|---|
-| `local-url.yml` | App on your own machine. Loopback — no authorization needed |
+| `local-url.yml` | App on your own machine. Loopback - no authorization needed |
 | `ollama-target.yml` | A local base model. Tests the **model**, not your application |
-| `rag-url.yml` | RAG pipeline. Adds LLM08/LLM04 — **use a disposable index** |
-| `agent-url.yml` | Tool-using agent. LLM06 priority — **use a sandbox** |
+| `rag-url.yml` | RAG pipeline. Adds LLM08/LLM04 - **use a disposable index** |
+| `agent-url.yml` | Tool-using agent. LLM06 priority - **use a sandbox** |
 | `ci-url.yml` | CI gate with `fail_on_score` and `${VAR}` secrets |
 | `public-url.yml` | External target you own. Needs `--authorized` |
 | `suppressions.yml` | Accepted false positives, each with a written reason |

@@ -2,7 +2,7 @@
 
 The constraint that shapes everything: the judge is a local Ollama model, so **CI must
 install and run Ollama on the runner**. Pulling a 2 GB model on every build is the main
-cost — cache it.
+cost - cache it.
 
 ## Exit codes to gate on
 
@@ -10,7 +10,7 @@ cost — cache it.
 |---|---|---|
 | 0 | Ran, no threshold breached | pass |
 | 1 | Risk score ≥ `--fail-on-score`, or a setup error | fail |
-| 2 | `--fail-on-judge-error` and some attacks unevaluated | fail — results untrustworthy |
+| 2 | `--fail-on-judge-error` and some attacks unevaluated | fail - results untrustworthy |
 
 Always set `--fail-on-judge-error`. A green build from a scan whose judge was down is
 worse than a red one.
@@ -144,7 +144,7 @@ it, use `host.docker.internal` and `OLLAMA_HOST=http://host.docker.internal:1143
 **`--fail-on-score`** is right for a new project: a single number, easy to ratchet down.
 Start at the current score and lower it over time.
 
-**Baseline compare** is right for a mature app with accepted residual risk — it fails only
+**Baseline compare** is right for a mature app with accepted residual risk - it fails only
 on *new* findings:
 
 ```bash

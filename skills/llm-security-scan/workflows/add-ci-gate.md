@@ -30,10 +30,10 @@ worse than a red one.
 
 CI needs a running target. In order of preference:
 
-1. **A container the workflow starts** — `docker compose up -d app`, then scan
+1. **A container the workflow starts** - `docker compose up -d app`, then scan
    `http://localhost:8000/chat`. Self-contained, disposable, and `--authorized` is
    legitimate because the workflow created it.
-2. **A dedicated staging deployment** — needs the user's standing authorization and a URL
+2. **A dedicated staging deployment** - needs the user's standing authorization and a URL
    in CI secrets.
 3. **Never production.** Say so if it is proposed.
 
@@ -50,9 +50,9 @@ The runner must install Ollama and pull a judge model (~2 GB). So:
 
 ## 5. Wire the outputs
 
-- `--format json,sarif` — SARIF into `github/codeql-action/upload-sarif` so findings show
+- `--format json,sarif` - SARIF into `github/codeql-action/upload-sarif` so findings show
   in the Security tab and on PRs.
-- Upload the report directory as an artifact with `if: always()` — the reports matter most
+- Upload the report directory as an artifact with `if: always()` - the reports matter most
   on the run that failed.
 
 ## 6. Handle secrets
@@ -63,11 +63,11 @@ the key out of logs and error output.
 
 ## 7. Write it
 
-Copy the matching template from [references/ci-cd.md](../references/ci-cd.md) — GitHub
-Actions (composite action or by hand), GitLab CI, or Docker — and adapt it. Then tell the
+Copy the matching template from [references/ci-cd.md](../references/ci-cd.md) - GitHub
+Actions (composite action or by hand), GitLab CI, or Docker - and adapt it. Then tell the
 user:
 
 - what gates the build and at what threshold;
-- what the first run will likely do (it may well fail — that is information);
+- what the first run will likely do (it may well fail - that is information);
 - how to ratchet the threshold down;
 - that `--include-dos-tests` is deliberately absent.

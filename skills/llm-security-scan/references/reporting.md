@@ -18,12 +18,12 @@ owasp_category       LLM01
 name                 Delimiter Injection
 payload              the attack text sent
 response             the target's reply (secrets/canaries REDACTED by default)
-success              bool — true iff outcome == "vulnerable"
+success              bool - true iff outcome == "vulnerable"
 outcome              vulnerable | safe | error
 judge_reasoning      the judge's explanation (also redacted)
 judge_error          null | judge_timeout | judge_unavailable | parse_failed | parse_tier2 | …
 severity             critical | high | medium | low | info
-confidence           0.0–1.0 from reconciliation
+confidence           0.0-1.0 from reconciliation
 verdict_source       rule_proof | both_agree | judge_only | judge_degraded | conflict | judge_error
 artifacts[]          deterministic evidence; each has type, detector, fingerprint, span
 recommendation       the OWASP remediation line for the category
@@ -63,7 +63,7 @@ llm-scanner baseline save --name production          # after a known-good scan
 llm-scanner baseline compare --name production       # rescans, then diffs
 ```
 
-Answers "are there findings that were not in the baseline" — the right CI gate for an
+Answers "are there findings that were not in the baseline" - the right CI gate for an
 app with accepted residual risk. For a remediation loop, `scripts/compare_scans.py` is
 better: it is attack-keyed and reports regressions and inconclusive results explicitly.
 

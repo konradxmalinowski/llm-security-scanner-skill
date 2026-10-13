@@ -1,6 +1,6 @@
 # Workflow: assess, then scan
 
-Stages 1–4. Do not skip to the scan — a scan with no reachable target or no
+Stages 1-4. Do not skip to the scan - a scan with no reachable target or no
 authorization produces nothing, and a scan of a project with no LLM produces noise.
 
 ## 1. Inspect
@@ -21,7 +21,7 @@ Then tell the user, in this order:
 
 1. What the app is: `application_kind`, with two or three `signals` as evidence
    (`file:line`).
-2. Which categories are relevant and why — from `category_rationale`, not from the
+2. Which categories are relevant and why - from `category_rationale`, not from the
    category list.
 3. Which protections are missing (`missing_controls`).
 4. What setup is needed (`next_steps`).
@@ -40,7 +40,7 @@ scripts/check_authorization.py --target <t> --target-type <url|ollama>
   written permission to security-test it?"* On a clear yes, re-run with `--authorized`.
 - `requires_ack: false` → hard refusal. Relay `reason` and stop. Do not look for a bypass.
 
-Relay every `warnings` entry — production markers, plaintext transport, DoS consent.
+Relay every `warnings` entry - production markers, plaintext transport, DoS consent.
 
 Also check, from the inspection:
 
@@ -64,7 +64,7 @@ It must accept `{"prompt": …}` and return `{"response": …}` or `{"message": 
 does not, add the test adapter from
 [references/target-types.md](../references/target-types.md) rather than changing the app.
 
-If `system_prompt` was detected, plant a canary — this is the single highest-value step,
+If `system_prompt` was detected, plant a canary - this is the single highest-value step,
 turning LLM07 from a judge guess into proof:
 
 ```bash
@@ -109,4 +109,4 @@ scripts/scan.py --target mistral:7b --target-type ollama --judge-model llama3.2:
 ```
 
 Be explicit with the user: this measures the **base model's** susceptibility. It says
-nothing about their prompt, retrieval, tools or output handling — those live in their code.
+nothing about their prompt, retrieval, tools or output handling - those live in their code.

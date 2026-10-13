@@ -1,6 +1,6 @@
 # Workflow: fix, then prove it
 
-Stages 6–7. Detection without verification is half the job.
+Stages 6-7. Detection without verification is half the job.
 
 ```
 finding → read the source → root cause → propose → change → test → re-scan → compare
@@ -15,7 +15,7 @@ scripts/remediate.py LLM01
 Root causes, where to look, fix pattern, verification, limits. The recommendation and
 CWE/CVSS come from the scanner, so they match the report.
 
-## 2. Read the actual source — do not skip this
+## 2. Read the actual source - do not skip this
 
 Use the inspection `signals` (`file:line`) to find the code. Then answer the category's
 real question:
@@ -36,12 +36,12 @@ false positive *for this app*; say that rather than filing a bug.
 ## 3. Explain the root cause
 
 One or two sentences, naming the file and line, and what the attacker controls. If the
-finding is `heuristic` and the code shows the path is not reachable, say so and stop —
+finding is `heuristic` and the code shows the path is not reachable, say so and stop -
 that is a complete and correct outcome.
 
 ## 4. Propose before changing
 
-Show the fix. Say what it does and does not prevent — prompt-level defences are
+Show the fix. Say what it does and does not prevent - prompt-level defences are
 probabilistic, and claiming otherwise sets the user up badly. Change code only when asked.
 
 ## 5. Run the project's own tests
@@ -50,7 +50,7 @@ probabilistic, and claiming otherwise sets the user up badly. Change code only w
 pytest            # or whatever the project uses
 ```
 
-A security fix that breaks the app is not a fix. Also add a regression test — a scan is a
+A security fix that breaks the app is not a fix. Also add a regression test - a scan is a
 sample, a test is a gate:
 
 - LLM01: the canonical override payload does not change the response shape.
@@ -74,17 +74,17 @@ and the comparison will tell you so.
 scripts/compare_scans.py reports/<before>/report.json reports/<after>/report.json
 ```
 
-Read `verdict` first — it names regressions and inconclusive results ahead of wins, on
+Read `verdict` first - it names regressions and inconclusive results ahead of wins, on
 purpose.
 
 | Bucket | Means |
 |---|---|
 | `fixed` | Vulnerable before, safe now |
 | `still_vulnerable` | No change |
-| `regressed` | **Safe before, vulnerable now.** The fix broke something — handle first |
+| `regressed` | **Safe before, vulnerable now.** The fix broke something - handle first |
 | `new` | Vulnerable and absent from the earlier scan |
 | `inconclusive` | Not evaluated; the comparison is partial |
-| `removed` | Absent from the later scan and scope differed — not a fix |
+| `removed` | Absent from the later scan and scope differed - not a fix |
 
 ## 8. Report honestly
 
@@ -98,5 +98,5 @@ purpose.
 ## Iterate
 
 Repeat per category, highest-confidence findings first. Stop when the remaining findings
-are accepted risk — and record each one as a suppression with a written reason
+are accepted risk - and record each one as a suppression with a written reason
 ([references/configuration.md](../references/configuration.md)).

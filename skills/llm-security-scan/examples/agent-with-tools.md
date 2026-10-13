@@ -1,6 +1,6 @@
 # Example: an agent with tools
 
-LLM06 territory. Here the scan result is the *start* of the analysis, not the end — the
+LLM06 territory. Here the scan result is the *start* of the analysis, not the end - the
 report shows what the model attempted; only the tool code shows what would have happened.
 
 ## 1. Inspect

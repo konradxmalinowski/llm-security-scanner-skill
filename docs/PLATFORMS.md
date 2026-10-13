@@ -17,8 +17,8 @@ Nothing is claimed as supported on the strength of a blog post.
 
 ## The thing that makes this tractable
 
-All three major agent platforms now implement the **same** open Agent Skills standard —
-a directory with a `SKILL.md` carrying `name` and `description` frontmatter — and all
+All three major agent platforms now implement the **same** open Agent Skills standard -
+a directory with a `SKILL.md` carrying `name` and `description` frontmatter - and all
 three read `.agents/skills/` as a shared interop path.
 
 So this repository contains exactly **one** skill directory. The platform adapters are
@@ -30,7 +30,7 @@ contains more than one `SKILL.md`.
 | | Claude Code | Gemini CLI | Codex / ChatGPT | Generic |
 |---|---|---|---|---|
 | Agent Skills (`SKILL.md`) | ✅ native | ✅ native | ✅ native | ✅ if supported |
-| Reads `.agents/skills/` | ✅ | ✅ (alias, higher precedence) | ✅ (primary) | — |
+| Reads `.agents/skills/` | ✅ | ✅ (alias, higher precedence) | ✅ (primary) | - |
 | Progressive disclosure | ✅ | ✅ | ✅ | ✅ |
 | Bundled scripts | ✅ | ✅ | ✅ | needs shell |
 | Plugin/extension package | ✅ `plugin.json` | ✅ `gemini-extension.json` | ❌ none exists | ❌ |
@@ -38,12 +38,12 @@ contains more than one `SKILL.md`.
 | Slash command | ⚠️ skills preferred | ✅ `commands/*.toml` | ❌ | ❌ |
 | MCP server | ✅ | ✅ | ✅ | ✅ |
 | Declared user settings | ✅ `userConfig` | ✅ `settings` array | ❌ | ❌ |
-| Platform metadata file | — | — | ✅ `agents/openai.yaml` | — |
+| Platform metadata file | - | - | ✅ `agents/openai.yaml` | - |
 | Hooks | ✅ | ✅ | ❌ | ❌ |
 
 ✅ implemented · ⚠️ implemented with a caveat below · ❌ no platform equivalent exists
 
-## Claude Code — fully native
+## Claude Code - fully native
 
 The repository root *is* a plugin: `.claude-plugin/plugin.json`, the default-scanned
 `skills/` directory, `.claude-plugin/marketplace.json`, and an `mcpServers` declaration.
@@ -57,7 +57,7 @@ tests covering the reserved-name rules, the recognized-field set, the `./` path 
 rule, the absence of a root `CLAUDE.md` (which `validate` warns about) and of a top-level
 `bin/` (which blocks installation on claude.ai and Cowork).
 
-## Gemini CLI — fully native
+## Gemini CLI - fully native
 
 The same repository root is also a Gemini extension: `gemini-extension.json`, `GEMINI.md`
 as its context file, the shared `skills/` directory, and `commands/llm-security-scan.toml`
@@ -75,15 +75,15 @@ for the slash command.
   stay declared.
 - **Extension policies cannot grant `allow`.** Gemini deliberately ignores `allow`
   decisions and `yolo` mode from an extension. This extension therefore ships no
-  `policies/` directory — the authorization gate lives in the Python layer, where it
+  `policies/` directory - the authorization gate lives in the Python layer, where it
   cannot be configured away. That is a better place for it regardless.
 - **Management commands need a restart**, unlike `/skills reload` for skills alone.
 
-## Codex / ChatGPT — native skill, no package format
+## Codex / ChatGPT - native skill, no package format
 
 Codex implements the same standard and reads `.agents/skills`, so the canonical skill is
 natively Codex-ready. `skills/llm-security-scan/agents/openai.yaml` adds the optional
-Codex metadata — display name, descriptions, the desktop app's default prompt,
+Codex metadata - display name, descriptions, the desktop app's default prompt,
 `policy.allow_implicit_invocation`, and the optional MCP dependency. Claude Code and
 Gemini CLI ignore that file, which is what lets one directory serve all three.
 
@@ -93,7 +93,7 @@ Gemini CLI ignore that file, which is what lets one directory serve all three.
   `llm-scanner-skill install`, or a committed `.agents/skills/` directory. There is no
   format to target, so none is invented.
 - **No hooks or monitors.**
-- **Duplicate skill names are not merged** — two installs in different tiers can both
+- **Duplicate skill names are not merged** - two installs in different tiers can both
   appear. Install into one scope.
 
 Codex caps the startup skill list at 2% of the context window (8 000 characters if
@@ -101,13 +101,13 @@ unknown), shortening descriptions and omitting skills from large sets. This skil
 description is ~580 characters and its `SKILL.md` body is ~150 lines, with the detail in
 `references/`. A test enforces both bounds.
 
-## Generic — three levels
+## Generic - three levels
 
-1. **Agent Skills standard** — copy the skill directory. That is the whole integration.
-2. **MCP** — `llm-scanner-skill mcp`, 11 tools, plus
+1. **Agent Skills standard** - copy the skill directory. That is the whole integration.
+2. **MCP** - `llm-scanner-skill mcp`, 11 tools, plus
    [`platforms/generic/system-prompt.md`](../platforms/generic/system-prompt.md), since an
    MCP server alone conveys no workflow.
-3. **Tool calling only** — [`platforms/generic/tools.json`](../platforms/generic/tools.json)
+3. **Tool calling only** - [`platforms/generic/tools.json`](../platforms/generic/tools.json)
    holds OpenAI/Gemini-compatible function declarations, **generated** from the MCP
    server's own definitions by `tools/gen_tools_json.py`. CI fails if the committed file
    drifts, so the two can never disagree.
@@ -121,7 +121,7 @@ description is ~580 characters and its `SKILL.md` body is ~150 lines, with the d
 | Hosted ChatGPT without Codex | The skill needs to execute the scanner. A hosted chat with no shell and no MCP cannot |
 | LangChain / LlamaIndex agents | Would work through `tools.json`, but no adapter has been written or tested |
 
-If you integrate one of these, the generic layer is the place to start — and the
+If you integrate one of these, the generic layer is the place to start - and the
 authorization gate and sanitizer come along automatically, because they are enforced in
 Python rather than in prompt text.
 

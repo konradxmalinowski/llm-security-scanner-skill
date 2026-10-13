@@ -6,7 +6,7 @@
 |---|---|
 | Python 3.11+ | The scanner requires it |
 | [`llm-security-scanner`](https://pypi.org/project/llm-security-scanner/) ≥ 0.8.0 | The actual engine. Installed automatically as a dependency |
-| [Ollama](https://ollama.com) + one pulled model | The AI judge. **Hard requirement** — there is no cloud fallback by design |
+| [Ollama](https://ollama.com) + one pulled model | The AI judge. **Hard requirement** - there is no cloud fallback by design |
 | A reachable target | A running LLM app, or a local Ollama model |
 
 ```bash
@@ -26,22 +26,22 @@ bundled skill, and exits non-zero if any is unusable.
 
 In order:
 
-1. `$LLM_SCANNER_BIN` — an explicit override. Accepts a multi-word shim, so
+1. `$LLM_SCANNER_BIN` - an explicit override. Accepts a multi-word shim, so
    `export LLM_SCANNER_BIN="docker run --rm --network host ghcr.io/konradxmalinowski/llm-security-scanner:latest"`
    works.
-2. `llm-scanner` on `PATH` — the normal install.
+2. `llm-scanner` on `PATH` - the normal install.
 3. The current interpreter, if `llm_scanner` is importable. Covers a venv whose `bin/` is
    off `PATH`, which is common when an agent runs in one environment and the scanner
    lives in another.
 
-If all three fail, every command returns a JSON error naming the install step — never a
+If all three fail, every command returns a JSON error naming the install step - never a
 traceback.
 
 ---
 
 ## Claude Code
 
-### As a plugin (recommended — also wires the MCP server)
+### As a plugin (recommended - also wires the MCP server)
 
 ```
 /plugin marketplace add konradxmalinowski/llm-security-scanner-skill
@@ -80,7 +80,7 @@ gemini extensions install https://github.com/konradxmalinowski/llm-security-scan
 uv pip install 'llm-security-scanner-skill[mcp]'
 ```
 
-Restart the CLI — extension changes need a new session. Then `/skills list` and
+Restart the CLI - extension changes need a new session. Then `/skills list` and
 `/llm-security-scan ./my-app`.
 
 **Gemini sanitizes the environment**: an extension receives only standard safe variables
@@ -155,7 +155,7 @@ llm-scanner-skill uninstall --platform all --scope user
 ```
 
 `--mode symlink` (default) keeps the installed skill tracking the source, which is what
-you want while developing it. `--mode copy` is self-contained — right for a wheel install
+you want while developing it. `--mode copy` is self-contained - right for a wheel install
 or a container image. `--platform all` installs every path; `claude` and `codex` resolve
 to the same `.agents` location, and the second is reported as already installed rather
 than as an error.
@@ -178,7 +178,7 @@ docker run --rm --network host \
 it, the image defaults `OLLAMA_HOST` to `http://host.docker.internal:11434` (Docker
 Desktop); on Linux use `--add-host=host.docker.internal:host-gateway`.
 
-The container does **not** bundle Ollama — run it on the host or as a second container.
+The container does **not** bundle Ollama - run it on the host or as a second container.
 
 ---
 

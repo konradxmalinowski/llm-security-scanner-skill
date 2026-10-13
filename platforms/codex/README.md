@@ -2,7 +2,7 @@
 
 Verified against [learn.chatgpt.com/docs/build-skills](https://learn.chatgpt.com/docs/build-skills).
 Codex implements the same [agentskills.io](https://agentskills.io) standard, and reads
-`.agents/skills` — the same interop path Claude Code and Gemini CLI use.
+`.agents/skills` - the same interop path Claude Code and Gemini CLI use.
 
 ## Install
 
@@ -45,7 +45,7 @@ command = "llm-scanner-skill"
 args = ["mcp"]
 ```
 
-The MCP server is optional — the skill works through shell commands alone.
+The MCP server is optional - the skill works through shell commands alone.
 
 ## Context budget
 

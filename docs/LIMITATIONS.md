@@ -5,21 +5,21 @@ Stated plainly, because a security tool that overstates itself is worse than non
 ## Inherited from the scanner
 
 **Non-determinism.** LLMs vary run to run. A scan is a sample, not a proof. A
-`heuristic` verdict flipping between runs may be variance rather than a fix — re-run
+`heuristic` verdict flipping between runs may be variance rather than a fix - re-run
 before concluding, and prefer `confirmed` or `likely` evidence.
 
 **The judge is a small local model.** Offline-first means the judge is whatever Ollama
 model you pulled, with real error in both directions. `llm-scanner judge-eval` measures it
 (precision / recall / F1 / Cohen's kappa against 32 hand-labelled entries) and `--min-kappa`
-gates CI — but nothing removes the error. A judge-only verdict is one model's opinion, and
+gates CI - but nothing removes the error. A judge-only verdict is one model's opinion, and
 the skill calls it `heuristic` for that reason.
 
 **Behavioural testing only.** The scanner probes a running system; it does not read your
 code. Two categories are therefore only half-answered by a report:
 
-- **LLM03 (supply chain)** — probes what the model *says* about its components. Real
+- **LLM03 (supply chain)** - probes what the model *says* about its components. Real
   assurance needs SBOM and SCA tooling.
-- **LLM05 (improper output handling)** — proves the model will *produce* dangerous output,
+- **LLM05 (improper output handling)** - proves the model will *produce* dangerous output,
   not that your app renders or executes it. A vulnerable finding plus a sanitizing renderer
   is a genuine false positive for your app.
 
@@ -44,7 +44,7 @@ a single-tenant test index. The skill says so and supplies the two-tenant test i
 **Static inspection has both error modes.** `inspect.py` is regex-based pattern matching
 over source text. It misses dynamically registered routes, unusual frameworks, LLM calls
 behind an internal abstraction, and anything in a language whose idioms are not in the
-pattern set. It can also over-match — a commented-out import counts. Treat
+pattern set. It can also over-match - a commented-out import counts. Treat
 `recommended_categories` as a starting point backed by the `signals` evidence, never as a
 complete attack-surface map. `candidate_endpoints` being empty is not evidence that no
 endpoint exists.
@@ -58,7 +58,7 @@ a language model.
 **The authorization gate classifies, it does not verify ownership.** It can tell loopback
 from external; it cannot tell whether the user owns `app.example.com`. That is why
 `--authorized` exists and why the skill requires asking. An agent that sets the flag
-without asking defeats it — the gate narrows the blast radius, it does not remove the
+without asking defeats it - the gate narrows the blast radius, it does not remove the
 need for judgement.
 
 **DNS-dependent classification.** Resolution happens at classification time, so a
@@ -71,7 +71,7 @@ nightly job exist to detect that surface changing.
 
 **The comparison is attack-keyed.** It cannot tell a genuine fix from model variance on a
 `heuristic` finding. It flags scope differences and refuses to call a disappeared attack
-"fixed" when the scopes differed — but re-running is still the only way to be sure.
+"fixed" when the scopes differed - but re-running is still the only way to be sure.
 
 ## Not implemented, and why
 
@@ -86,7 +86,7 @@ nightly job exist to detect that surface changing.
 
 ## Recommended future work
 
-1. **AST-based inspection** for Python and TypeScript, replacing regex matching — fewer
+1. **AST-based inspection** for Python and TypeScript, replacing regex matching - fewer
    false positives and resolution through internal abstractions.
 2. **An indirect-injection harness.** The highest-value RAG test writes a poisoned
    document to a disposable index and asks an innocent question. It is documented as a

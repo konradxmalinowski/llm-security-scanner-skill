@@ -6,14 +6,14 @@ build on".
 ## What this measures, and what it does not
 
 It measures the **model's** susceptibility to the payloads. It says nothing about your
-application's prompt, retrieval, tools or output handling — those live in your code. Say
+application's prompt, retrieval, tools or output handling - those live in your code. Say
 this to the user; otherwise a clean model scan reads as a clean application.
 
 ## Scan one model
 
 ```bash
 ollama pull mistral:7b
-ollama pull llama3.2:3b     # the judge — must differ from the target
+ollama pull llama3.2:3b     # the judge - must differ from the target
 
 scripts/scan.py --target mistral:7b --target-type ollama \
   --judge-model llama3.2:3b --categories LLM01,LLM07,LLM09
@@ -31,7 +31,7 @@ scripts/scan.py --target mistral:7b --target-type ollama \
 ```
 
 The canary is appended to your prompt automatically, and n-gram overlap detection is
-enabled against the real text — so partial leakage is detected too, not just the token.
+enabled against the real text - so partial leakage is detected too, not just the token.
 
 ## Compare several
 
@@ -71,4 +71,4 @@ better judge, or lean on the `confirmed`/`likely` classes and discount `heuristi
 
 Give the risk score per model **and** the evidence breakdown. A model with a lower score
 made entirely of `heuristic` verdicts is not clearly safer than one with a slightly higher
-score containing a `confirmed` finding — the second result is simply better measured.
+score containing a `confirmed` finding - the second result is simply better measured.

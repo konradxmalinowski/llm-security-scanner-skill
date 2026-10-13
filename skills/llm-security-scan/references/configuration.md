@@ -17,12 +17,12 @@ parallel one. Generate it with `scripts/init_config.py` and check it with
 | `output_dir` | path | Default `./reports` |
 | `formats` | str \| list | `md`,`json`,`html`,`txt`,`sarif`. Keep `json` |
 | `include_dos_tests` | bool | Required for LLM10; stresses the target |
-| `fail_on_score` | float | 0.0–10.0; exit 1 at or above |
+| `fail_on_score` | float | 0.0-10.0; exit 1 at or above |
 | `suppressions_file` | path | Accepted false positives |
 | `payloads_dir` | path | Extra YAML payloads, loaded alongside the bundled set |
 
 Any other key is **silently ignored** by the scanner (`extra="ignore"`), which is why
-`validate_config.py` rejects unknown keys — it catches `judge-model` vs `judge_model`
+`validate_config.py` rejects unknown keys - it catches `judge-model` vs `judge_model`
 before a long scan runs on a default you did not intend.
 
 ## Precedence
@@ -71,7 +71,7 @@ formats: [json, html]
 
 Do not scan all ten by reflex. `scripts/inspect_target.py` returns
 `recommended_categories` with a per-category rationale drawn from what it actually found
-in the code — use that. A tool-less, retrieval-less chatbot has no LLM06 or LLM08 surface,
+in the code - use that. A tool-less, retrieval-less chatbot has no LLM06 or LLM08 surface,
 and scanning for them costs minutes and produces noise.
 
 LLM10 is never auto-recommended: its probes stress the target and need explicit consent.
@@ -86,7 +86,7 @@ suppressions:
 ```
 
 Suppressions are applied **after** the attack runs, so the evidence is still in the
-report; only the risk score and labels change. Every entry needs a real reason — a
+report; only the risk score and labels change. Every entry needs a real reason - a
 suppression with no justification is a silently accepted vulnerability.
 
 ## Multi-target comparison

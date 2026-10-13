@@ -50,11 +50,11 @@ scripts/scan.py --target http://localhost:8000/query --target-type url \
 ## 5. Interpreting LLM08 honestly
 
 A vulnerable LLM08 finding proves retrieved content influenced the output in a way it
-should not have. It does **not** prove cross-tenant leakage — that needs real
+should not have. It does **not** prove cross-tenant leakage - that needs real
 multi-tenant data, and a single-tenant test index cannot demonstrate it.
 
 Say: *"Retrieved content influenced the response in a way that suggests weak isolation.
-Confirming cross-tenant leakage needs a two-tenant test — here is that test."*
+Confirming cross-tenant leakage needs a two-tenant test - here is that test."*
 
 ```python
 def test_tenant_isolation():
@@ -79,7 +79,7 @@ index.add("tenant-a", POISON)
 ```
 
 If the marker appears, indirect injection works end to end. This is a project test rather
-than a scanner payload, because only you can write to the index — but it is the finding
+than a scanner payload, because only you can write to the index - but it is the finding
 that matters most for a RAG app. Depth:
 [references/prompt-injection.md](../references/prompt-injection.md).
 

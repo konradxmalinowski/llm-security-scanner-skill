@@ -3,7 +3,7 @@
 Verified against the [Agent Skills spec](https://agentskills.io/specification) and the
 [Claude Code plugin reference](https://code.claude.com/docs/en/plugins-reference).
 
-## Option A — install as a plugin (recommended)
+## Option A - install as a plugin (recommended)
 
 The repository root *is* a Claude Code plugin: `.claude-plugin/plugin.json` plus the
 `skills/` directory, and the plugin also wires the MCP server.
@@ -22,7 +22,7 @@ uv pip install 'llm-security-scanner-skill[mcp]'
 The skill appears as `llm-security-scanner:llm-security-scan` (components are namespaced
 under the plugin name). Verify with `/plugin` or `claude plugin validate .` from a clone.
 
-## Option B — install the skill only
+## Option B - install the skill only
 
 ```bash
 uv pip install llm-security-scanner-skill
@@ -33,10 +33,10 @@ llm-scanner-skill install --platform claude --scope project  # ./.claude/skills/
 `--scope project` commits the skill to the repo so a team shares it. `--mode symlink`
 (the default) keeps it tracking the checkout; `--mode copy` is self-contained.
 
-`--platform agents` installs to `.agents/skills/`, which Claude Code also scans — one
+`--platform agents` installs to `.agents/skills/`, which Claude Code also scans - one
 install then covers Claude, Gemini CLI and Codex.
 
-## Option C — clone and point at it
+## Option C - clone and point at it
 
 ```bash
 git clone https://github.com/konradxmalinowski/llm-security-scanner-skill
@@ -51,7 +51,7 @@ Installed via Option A, or by hand in `.mcp.json`:
 { "mcpServers": { "llm-security-scanner": { "command": "llm-scanner-skill", "args": ["mcp"] } } }
 ```
 
-Optional — the skill works through Bash alone. See
+Optional - the skill works through Bash alone. See
 [references/mcp.md](../../skills/llm-security-scan/references/mcp.md).
 
 ## Using it

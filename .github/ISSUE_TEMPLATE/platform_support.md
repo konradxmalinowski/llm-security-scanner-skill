@@ -13,10 +13,10 @@ definitions or plugins:
 
 ## Does it implement the Agent Skills standard?
 
-<!-- https://agentskills.io/specification — if yes, the integration may just be an
+<!-- https://agentskills.io/specification - if yes, the integration may just be an
      install path, since one canonical skill already serves Claude, Gemini and Codex. -->
 
-- [ ] Yes — reads a `SKILL.md` directory
+- [ ] Yes - reads a `SKILL.md` directory
 - [ ] Reads `.agents/skills/`
 - [ ] Supports MCP
 - [ ] Tool calling only

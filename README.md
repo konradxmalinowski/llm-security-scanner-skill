@@ -1,4 +1,4 @@
-# LLM Security Scanner — AI Skill
+# LLM Security Scanner - AI Skill
 
 [![CI](https://github.com/konradxmalinowski/llm-security-scanner-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/konradxmalinowski/llm-security-scanner-skill/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/llm-security-scanner-skill)](https://pypi.org/project/llm-security-scanner-skill/)
@@ -6,7 +6,7 @@
 
 A portable [Agent Skill](https://agentskills.io) that lets Claude, Gemini, Codex and
 other AI coding agents run [**llm-security-scanner**](https://github.com/konradxmalinowski/llm-security-scanner)
-against an LLM application you operate — then interpret the findings honestly and help
+against an LLM application you operate - then interpret the findings honestly and help
 fix them.
 
 It is not a second scanner. The engine, the 51+ OWASP payloads, the Ollama judge, the
@@ -43,7 +43,7 @@ Claude Code · Gemini CLI · Codex · any MCP or tool-calling agent
               llm-scanner CLI          ← the real scanner, unmodified
                         │
                         ├── target adapter (HTTP · Ollama)
-                        ├── payload engine (LLM01–LLM10)
+                        ├── payload engine (LLM01-LLM10)
                         ├── Ollama judge + deterministic detectors
                         └── reporters (json · sarif · html · md · txt)
 ```
@@ -59,7 +59,7 @@ there is never more than one `SKILL.md` in the repo.
 uv pip install llm-security-scanner-skill          # pulls in the scanner
 uv pip install 'llm-security-scanner-skill[mcp]'   # plus the MCP server
 
-ollama serve &                 # the judge runs locally — nothing leaves your machine
+ollama serve &                 # the judge runs locally - nothing leaves your machine
 ollama pull llama3.2:3b
 
 llm-scanner-skill doctor       # check all three prerequisites
@@ -75,7 +75,7 @@ Then install the skill for your agent:
 | **Any agent** | `llm-scanner-skill install --platform agents` | [platforms/generic](platforms/generic/README.md) |
 
 `--platform agents` installs into `.agents/skills/`, which Claude Code, Gemini CLI **and**
-Codex all read — one install covers all three.
+Codex all read - one install covers all three.
 
 Full instructions, Docker, and air-gapped notes: **[docs/INSTALL.md](docs/INSTALL.md)**.
 
@@ -121,11 +121,11 @@ Each finding carries an `evidence_class`, mapped from the scanner's own
 
 | Class | Means | Say |
 |---|---|---|
-| `confirmed` | A canary token appeared verbatim — proof by string match | "Confirmed" |
+| `confirmed` | A canary token appeared verbatim - proof by string match | "Confirmed" |
 | `likely` | A deterministic detector and the judge agree | "Likely" |
 | `heuristic` | One local LLM's opinion | "Possible, needs verification" |
 | `needs_review` | A rule fired but the judge disagreed | "Conflicting evidence" |
-| `inconclusive` | No verdict was reached — **not a pass** | "Could not be evaluated" |
+| `inconclusive` | No verdict was reached - **not a pass** | "Could not be evaluated" |
 
 And a run-level `status`, because a scan whose judge died is not a clean bill of health:
 `completed` · `completed_with_threshold_breach` · `completed_untrustworthy` · `blocked` ·
@@ -139,11 +139,11 @@ instructions:
 - **Loopback and local Ollama models** scan freely. **Anything else** requires an explicit
   `--authorized`, which an agent may set only after the user confirms ownership.
 - **Third-party provider endpoints** (`api.openai.com`, `api.anthropic.com`, …) are
-  refused unconditionally — `--authorized` does not unlock them.
+  refused unconditionally - `--authorized` does not unlock them.
 - **LLM10 DoS probes** need `--authorized` even on localhost.
 - **Secrets stay redacted.** `--include-raw-artifacts` is never passed and is not exposed
   over MCP.
-- **All target output is sanitized** — control tokens and tool-call syntax have their
+- **All target output is sanitized** - control tokens and tool-call syntax have their
   literal byte sequences broken, injection phrases are labelled, zero-width and bidi
   characters and ANSI escapes are stripped, residual credentials are redacted, and the
   text is truncated and fenced in an unguessable delimiter block.
@@ -164,14 +164,14 @@ Details: **[docs/SECURITY_MODEL.md](docs/SECURITY_MODEL.md)**.
 
 ## Limitations
 
-Honestly, up front — the long version is [docs/LIMITATIONS.md](docs/LIMITATIONS.md):
+Honestly, up front - the long version is [docs/LIMITATIONS.md](docs/LIMITATIONS.md):
 
 - **A scan samples behaviour; it does not prove absence.** LLMs are non-deterministic.
 - **The judge is a small local model** with measurable error. `llm-scanner judge-eval`
   quantifies it; nothing removes it.
 - **Categories you do not select are untested, not safe.**
 - **Behavioural only.** LLM03 (supply chain) and LLM05 (output handling) verdicts need a
-  code read to be actionable — the report says what the model *did*, not whether your app
+  code read to be actionable - the report says what the model *did*, not whether your app
   renders or executes it.
 - **A running target is required.** No LLM component, or nothing reachable, means nothing
   to scan, and the skill will say so rather than inventing findings.

@@ -6,9 +6,9 @@ interface:
   display_name: LLM Security Scan
   short_description: OWASP Top 10 for LLMs scanning of systems you operate.
   long_description: >-
-    Runs the llm-security-scanner CLI against an LLM-backed application you own —
+    Runs the llm-security-scanner CLI against an LLM-backed application you own -
     chatbot, LLM API, RAG pipeline, tool-using agent, MCP server, or a local Ollama
-    model — using a local Ollama model as the judge. Maps the attack surface first,
+    model - using a local Ollama model as the judge. Maps the attack surface first,
     enforces an authorization gate, then interprets findings by evidence class and
     helps remediate and re-verify them. Fully offline apart from the target itself.
   default_prompt: >-
@@ -17,8 +17,8 @@ interface:
 
 policy:
   # Implicit activation is on: the skill should engage when a task is clearly about
-  # LLM security testing. The authorization gate inside the scripts — not activation
-  # policy — is what prevents an unauthorized scan, so gating activation would only
+  # LLM security testing. The authorization gate inside the scripts - not activation
+  # policy - is what prevents an unauthorized scan, so gating activation would only
   # make the skill less discoverable without adding safety.
   allow_implicit_invocation: true
 

@@ -1,10 +1,10 @@
 # Security model
 
 This project hands an AI agent a tool that fires 51+ adversarial payloads at an LLM
-endpoint. Two risks follow, and both are addressed in code rather than in prompt text —
+endpoint. Two risks follow, and both are addressed in code rather than in prompt text -
 because an agent can ignore prompt text, and because a prompt-injected agent *will*.
 
-## Risk 1 — the skill becomes an attack tool
+## Risk 1 - the skill becomes an attack tool
 
 **Control: the authorization gate** (`src/llm_scanner_skill/authz.py`), enforced by
 `run_scan()` *before* the scanner is executed. A test asserts the scanner binary is never
@@ -31,7 +31,7 @@ Design decisions worth stating:
   systems; scanning them breaches their terms and bills someone's account.
 - **LLM10 DoS probes require authorization even on localhost.** The scanner has its own
   opt-in flag; this is a second, independent lock.
-- **Production hostnames raise a warning** the agent must relay — computed before
+- **Production hostnames raise a warning** the agent must relay - computed before
   classification branches, so an internal production host that cannot be resolved still
   gets it. That is the case where it matters most.
 
@@ -40,7 +40,7 @@ stated in `SKILL.md`, `AGENTS.md`, `GEMINI.md`, the MCP server's instructions, t
 parameter description, and `platforms/generic/system-prompt.md`. The gate is the backstop;
 the instruction is the intent.
 
-## Risk 2 — the target hijacks the agent
+## Risk 2 - the target hijacks the agent
 
 This is the sharp one. The tool prompt-injects a target on purpose, so **every target
 response is attacker-influenced by construction**, and every report transcribes those
@@ -55,12 +55,12 @@ single boundary in `summarize.py` where report text becomes envelope text.
 
 | Layer | Against | How |
 |---|---|---|
-| **Invisible** | Zero-width smuggling, bidi spoofing | Strip `U+200B–200F`, `U+202A–202E`, `U+2060–2069`, `U+FEFF`, tag characters. **First**, so the lexical pass cannot be bypassed by a zero-width character mid-token |
+| **Invisible** | Zero-width smuggling, bidi spoofing | Strip `U+200B-200F`, `U+202A-202E`, `U+2060-2069`, `U+FEFF`, tag characters. **First**, so the lexical pass cannot be bypassed by a zero-width character mid-token |
 | **Escapes** | Terminal control, OSC 8/52 exfiltration | Strip ANSI CSI and OSC sequences |
 | **Secrets** | A report becoming the leak | Redact residual prefixed credentials (the scanner already redacts what its own detectors found; this catches the rest) |
 | **Control tokens** | `<\|im_start\|>`, `[INST]`, `### System:` read as a turn boundary | Label **and break the literal byte sequence** with an inserted middle dot |
 | **Tool syntax** | `<invoke name=…>`, `{{…}}`, `/command` executing from a tool result | Label and break the literal sequence |
-| **Injection phrases** | An LLM obeying "ignore all previous instructions" | Label. Deliberately *not* mangled — a model reads `i·gnore` fine, so the defence is the label plus the fence, and keeping it legible preserves triage |
+| **Injection phrases** | An LLM obeying "ignore all previous instructions" | Label. Deliberately *not* mangled - a model reads `i·gnore` fine, so the defence is the label plus the fence, and keeping it legible preserves triage |
 | **Budget** | Megabytes of adversarial text crowding out instructions | Truncate to 1 200 characters per excerpt |
 | **Fence** | Breaking out of the quoted block | Wrap in a delimiter with a random nonce the target cannot predict |
 
@@ -79,8 +79,8 @@ tells the user "the target echoed injection markers" instead of silently hiding 
 ## Secrets
 
 - `--include-raw-artifacts` is **never** passed and is **not exposed** over MCP. Two tests
-  enforce this. The scanner's default — detected secrets replaced by a per-run HMAC
-  fingerprint — is exactly right when the output is headed for CI logs or an agent's
+  enforce this. The scanner's default - detected secrets replaced by a per-run HMAC
+  fingerprint - is exactly right when the output is headed for CI logs or an agent's
   context.
 - Generated configs reference credentials as `${ENV_VAR}`, never inline. The scanner
   resolves them at run time and keeps them out of logs and error output.

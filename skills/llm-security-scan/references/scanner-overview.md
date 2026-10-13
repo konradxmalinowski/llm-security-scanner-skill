@@ -9,7 +9,7 @@ not replace or re-implement any of it.
 llm-scanner
   ├─ Preflight            Ollama reachable? judge model pulled? target reachable?
   │                       judge model != target model (no self-judging)
-  ├─ YamlPayloadLoader    payloads/ → 51+ payloads across LLM01–LLM10
+  ├─ YamlPayloadLoader    payloads/ → 51+ payloads across LLM01-LLM10
   ├─ TargetFactory
   │    ├─ HttpTarget      httpx AsyncClient → POST {"prompt": …}
   │    └─ OllamaTarget    ollama AsyncClient → local model; auto-injects a canary
@@ -85,4 +85,4 @@ Sum of severity weights over **successful** attacks, capped at 10.0:
 `critical 4.0 · high 2.5 · medium 1.5 · low 0.5 · info 0.0`.
 
 Findings the judge could not evaluate contribute **zero**. So on any scan with
-`inconclusive > 0`, the risk score is a lower bound — state that explicitly.
+`inconclusive > 0`, the risk score is a lower bound - state that explicitly.

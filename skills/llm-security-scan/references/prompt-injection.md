@@ -15,16 +15,16 @@ not a security control; it is one sample of a probability.
 
 ## Direct vs indirect
 
-**Direct** — the user types the injection. What the payloads mostly test.
+**Direct** - the user types the injection. What the payloads mostly test.
 
-**Indirect** — the injection arrives through content the application itself pulls in: a
+**Indirect** - the injection arrives through content the application itself pulls in: a
 retrieved document, a fetched web page, a tool result, an uploaded PDF, a database field,
 a filename. Far more dangerous, because the victim is not the attacker: an attacker plants
 it in a document, and your model obeys it in *another* user's session.
 
 If `inspect` reported `rag_retrieval`, `document_ingestion`, `external_data_access` or
 `tool_calling`, indirect injection is your real exposure. The URL-target scan exercises
-the direct path only — say so, and review the indirect paths by reading the code.
+the direct path only - say so, and review the indirect paths by reading the code.
 
 ## Defence in depth
 
@@ -32,10 +32,10 @@ the direct path only — say so, and review the indirect paths by reading the co
 Never concatenate user or retrieved text into the system message.
 
 ```python
-# Wrong — one stream, no boundary
+# Wrong - one stream, no boundary
 messages = [{"role": "system", "content": f"{SYSTEM_PROMPT}\n\nContext: {retrieved}\n\nUser: {q}"}]
 
-# Better — distinct messages, and untrusted spans explicitly delimited
+# Better - distinct messages, and untrusted spans explicitly delimited
 nonce = secrets.token_hex(8)
 messages = [
     {
@@ -57,11 +57,11 @@ unguessable one cannot.
 The model's decision must never *be* the authorization.
 
 ```python
-# Wrong — the model decides
+# Wrong - the model decides
 if "authorized" in llm_response.lower():
     delete_account(user_id)
 
-# Right — the model proposes, code decides
+# Right - the model proposes, code decides
 action = parse_action(llm_response)  # schema-validated
 if action.kind == "delete_account":
     require_permission(current_user, "account:delete")  # real check, every time
@@ -97,7 +97,7 @@ the fact, so the log is the control.
 ## Verifying a fix
 
 1. Re-scan LLM01 and confirm the specific `attack_id`s that succeeded now report safe.
-2. Re-scan more than once — a `heuristic` verdict flipping could be variance, not a fix.
+2. Re-scan more than once - a `heuristic` verdict flipping could be variance, not a fix.
 3. Add a regression test asserting the canonical override payload does not change the
    response *shape*.
 4. The real test is the privilege question: if the injection succeeded anyway, what could
