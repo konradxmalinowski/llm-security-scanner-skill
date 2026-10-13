@@ -25,7 +25,13 @@ jobs:
       - name: pip-audit
         run: |
           pip install --no-cache-dir pip-audit
-          pip-audit --strict --desc
+          # --skip-editable, and no --strict. This package is installed editable for the
+          # audit and is not on PyPI until release.yml publishes it, so auditing it is
+          # impossible; --strict makes BOTH "not found on PyPI" and "skipped" hard errors,
+          # so the two flags cannot be combined. Dropping --strict costs nothing here: the
+          # only unaudited distribution is our own, and pip-audit still exits non-zero on
+          # an actual vulnerability in any dependency, which is what gates the build.
+          pip-audit --desc --skip-editable
 
   secrets:
     name: Secret scan
