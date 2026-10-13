@@ -22,6 +22,14 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install uv && uv pip install -e ".[dev]" --system
+
+      - name: Upgrade setuptools
+        # PYSEC-2026-3447: the setuptools bundled with actions/setup-python's image is
+        # vulnerable, and this project does not pin setuptools (hatchling is the build
+        # backend), so upgrade it explicitly before pip-audit scans the environment.
+        # Same fix as the scanner repo's .github/workflows/security.yml.
+        run: pip install --upgrade "setuptools>=83.0.0"
+
       - name: pip-audit
         run: |
           pip install --no-cache-dir pip-audit
