@@ -30,7 +30,7 @@ jobs:
             echo "present=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v5
         if: steps.check.outputs.present == 'true'
         id: release
         with:
