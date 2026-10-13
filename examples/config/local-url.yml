@@ -1,0 +1,8 @@
+# Scanning an app running on your own machine.
+# Loopback, so no authorization acknowledgement is needed.
+target: http://localhost:8000/chat
+target_type: url
+judge_model: llama3.2:3b
+categories: [LLM01, LLM02, LLM05, LLM07]
+formats: [json, html]
+output_dir: ./reports

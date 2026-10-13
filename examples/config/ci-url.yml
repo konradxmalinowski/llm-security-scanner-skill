@@ -1,0 +1,11 @@
+# CI gate. The target is a container the pipeline starts, so --authorized is legitimate.
+# Secrets stay as ${VAR} placeholders, resolved from the environment at run time.
+target: ${LLM_ENDPOINT}
+target_type: url
+judge_model: llama3.2:3b
+api_key: ${LLM_API_KEY}
+categories: [LLM01, LLM02, LLM05, LLM07]
+severity: medium
+formats: [json, sarif]
+output_dir: ./reports
+fail_on_score: 7.0

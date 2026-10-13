@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin.json",
+  "name": "llm-security-scanner",
+  "displayName": "LLM Security Scanner",
+  "version": "0.1.0",
+  "description": "Scan LLM-backed applications you operate against the OWASP Top 10 for LLMs, interpret the findings by evidence class, and remediate them. Wraps the llm-security-scanner CLI; runs fully offline with a local Ollama judge.",
+  "author": {
+    "name": "Konrad Malinowski",
+    "url": "https://github.com/konradxmalinowski"
+  },
+  "homepage": "https://github.com/konradxmalinowski/llm-security-scanner-skill",
+  "repository": "https://github.com/konradxmalinowski/llm-security-scanner-skill",
+  "license": "MIT",
+  "keywords": ["security", "owasp", "llm", "prompt-injection", "red-team", "sarif"],
+  "mcpServers": {
+    "llm-security-scanner": {
+      "command": "llm-scanner-skill",
+      "args": ["mcp"]
+    }
+  }
+}

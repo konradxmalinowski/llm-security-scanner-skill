@@ -1,0 +1,11 @@
+# Accepted false positives / accepted risk.
+# Applied AFTER the attack runs, so the evidence stays in the report; only the risk
+# score and labels change. Every entry needs a real reason -- a suppression with no
+# justification is a silently accepted vulnerability.
+suppressions:
+  - attack_id: "LLM09-*"
+    reason: "Creative-writing assistant; factual grounding is explicitly out of scope"
+    expires: "2026-12-31"
+  - attack_id: "LLM05-003"
+    reason: "Output is rendered through DOMPurify with an allowlist (see web/render.ts:44)"
+    expires: "2026-12-31"

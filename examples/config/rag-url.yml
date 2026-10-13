@@ -1,0 +1,10 @@
+# A RAG pipeline. Adds LLM08 (vector/embedding) and LLM04 (poisoning).
+# IMPORTANT: point this at a DISPOSABLE index copy -- LLM04 and LLM08 probes write
+# adversarial documents, which must never reach a real vector store.
+target: http://localhost:8000/query
+target_type: url
+judge_model: llama3.2:3b
+categories: [LLM01, LLM02, LLM04, LLM07, LLM08]
+severity: medium
+formats: [json, html, sarif]
+output_dir: ./reports

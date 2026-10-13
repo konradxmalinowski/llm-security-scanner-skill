@@ -1,0 +1,94 @@
+name: Security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 5 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  sca:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: pip install uv && uv pip install -e ".[dev]" --system
+      - name: pip-audit
+        run: |
+          pip install --no-cache-dir pip-audit
+          pip-audit --strict --desc
+
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  codeql:
+    name: CodeQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      security-events: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - uses: github/codeql-action/init@v4
+        with:
+          languages: python
+          queries: security-and-quality
+      - uses: github/codeql-action/analyze@v4
+
+  self-check:
+    # This repository is itself an AI-agent surface, so its own instruction files
+    # are checked for the thing the skill warns about: content that would read as a
+    # command rather than as documentation.
+    name: Instruction-file hygiene
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: pip install uv && uv pip install -e ".[dev]" --system
+      - name: No secrets or tokens committed in example configs
+        run: |
+          python - <<'PY'
+          import pathlib, re, sys
+          # Example configs must reference secrets as ${VAR}, never inline them.
+          patterns = [
+              re.compile(r"\b(?:AKIA|ASIA)[0-9A-Z]{16}\b"),
+              re.compile(r"\bsk-(?:ant-|proj-)?[A-Za-z0-9_-]{20,}\b"),
+              re.compile(r"\bgh[pousr]_[A-Za-z0-9]{36,}\b"),
+          ]
+          bad = []
+          for path in pathlib.Path("examples").rglob("*"):
+              if not path.is_file():
+                  continue
+              text = path.read_text(encoding="utf-8", errors="ignore")
+              for pattern in patterns:
+                  if pattern.search(text):
+                      bad.append(str(path))
+          if bad:
+              print(f"inline credentials found in: {sorted(set(bad))}", file=sys.stderr)
+              sys.exit(1)
+          print("no inline credentials in examples/")
+          PY
+      - name: Skill and platform manifests validate
+        run: pytest tests/test_platforms.py -q

@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Scanner engine issues
+    url: https://github.com/konradxmalinowski/llm-security-scanner/issues
+    about: Payloads, the judge, detectors, report formats, or scan results belong here.
+  - name: Report a security vulnerability
+    url: https://github.com/konradxmalinowski/llm-security-scanner-skill/security/advisories/new
+    about: Privately report an authorization bypass, sanitizer bypass, or secret leak.

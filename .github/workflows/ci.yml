@@ -1,0 +1,100 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12', '3.13']
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Install dependencies
+        run: uv pip install -e ".[dev]" --system
+
+      - name: Lint with ruff
+        run: ruff check .
+
+      - name: Check formatting
+        run: ruff format --check .
+
+      - name: Run tests
+        run: pytest -q
+
+  validate-skill:
+    # The skill's structure is as much a deliverable as the Python code: a broken
+    # SKILL.md or a stale manifest ships a skill that silently will not load.
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - run: pip install uv && uv pip install -e ".[dev]" --system
+
+      - name: Validate skill structure and every platform manifest
+        run: pytest tests/test_platforms.py -q
+
+      - name: Verify the generated tool declarations are in sync
+        run: |
+          python tools/gen_tools_json.py
+          git diff --exit-code platforms/generic/tools.json \
+            || { echo "platforms/generic/tools.json is stale — run tools/gen_tools_json.py" >&2; exit 1; }
+
+      - name: Verify the skill installs for every platform
+        run: |
+          llm-scanner-skill install --platform all --scope project --mode copy
+          test -f .agents/skills/llm-security-scan/SKILL.md
+          test -f .claude/skills/llm-security-scan/SKILL.md
+          test -f .gemini/skills/llm-security-scan/SKILL.md
+
+      - name: Validate the Claude plugin manifest
+        run: |
+          npm install -g @anthropic-ai/claude-code >/dev/null 2>&1 || {
+            echo "::notice::claude CLI unavailable; skipping 'claude plugin validate'"
+            exit 0
+          }
+          claude plugin validate . --strict
+
+  contract:
+    # Asserts every assumption the skill layer makes about the scanner's CLI flags,
+    # enum values, config keys and report fields. Scheduled as well as on push, so a
+    # new scanner release that breaks the contract is caught without a commit here.
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - run: pip install uv && uv pip install -e ".[dev]" --system
+
+      - name: Scanner contract
+        run: pytest tests/test_contract.py -q
+
+      - name: Report the scanner version under test
+        run: |
+          python - <<'PY'
+          from importlib.metadata import version
+          print(f"llm-security-scanner=={version('llm-security-scanner')}")
+          PY

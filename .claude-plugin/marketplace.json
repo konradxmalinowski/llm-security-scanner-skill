@@ -1,0 +1,19 @@
+{
+  "name": "llm-security",
+  "owner": {
+    "name": "Konrad Malinowski",
+    "url": "https://github.com/konradxmalinowski"
+  },
+  "metadata": {
+    "description": "LLM application security tooling built on llm-security-scanner",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "llm-security-scanner",
+      "description": "OWASP Top 10 for LLMs scanning, finding interpretation and remediation for LLM applications you operate.",
+      "source": "./",
+      "strict": true
+    }
+  ]
+}

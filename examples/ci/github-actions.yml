@@ -1,0 +1,94 @@
+# Drop into .github/workflows/ in YOUR repository.
+# Gates the build on an LLM security scan of a container the workflow itself starts,
+# which is why --authorized is legitimate here. Never hardcode it for a target the
+# pipeline did not create.
+name: LLM Security
+
+on:
+  pull_request:
+  schedule:
+    - cron: "0 3 * * 1"   # full sweep weekly
+
+jobs:
+  llm-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      security-events: write      # required to upload SARIF
+    steps:
+      - uses: actions/checkout@v5
+
+      # Cache first: pulling a 2 GB judge model every run is the dominant cost.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.ollama/models
+          key: ollama-llama3.2-3b
+
+      - name: Start the application under test
+        run: |
+          docker compose up -d app
+          timeout 60 bash -c 'until curl -sf http://localhost:8000/health; do sleep 2; done'
+
+      - name: Install Ollama and the judge model
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          ollama serve &
+          timeout 60 bash -c 'until curl -sf http://localhost:11434/api/version; do sleep 2; done'
+          ollama pull llama3.2:3b
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - run: pip install llm-security-scanner-skill
+
+      - name: Scan
+        run: |
+          llm-scanner-skill scan \
+            --target http://localhost:8000/chat --target-type url \
+            --judge-model llama3.2:3b \
+            --categories LLM01,LLM02,LLM05,LLM07 \
+            --severity medium \
+            --format json,sarif \
+            --fail-on-score 6.0 \
+            --output-dir llm-scan-reports \
+            --authorized \
+            | tee envelope.json
+
+      # if: always() — the reports matter most on the run that failed.
+      - uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: llm-scan-reports
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: llm-scan-reports
+          path: |
+            llm-scan-reports/
+            envelope.json
+
+  # Guards the judge itself: catches an Ollama or model upgrade silently degrading
+  # every verdict, which would otherwise make the gate above meaningless.
+  judge-quality:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/cache@v4
+        with:
+          path: ~/.ollama/models
+          key: ollama-llama3.2-3b
+      - run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          ollama serve &
+          timeout 60 bash -c 'until curl -sf http://localhost:11434/api/version; do sleep 2; done'
+          ollama pull llama3.2:3b
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: pip install llm-security-scanner-skill
+      - run: llm-scanner judge-eval --judge llama3.2:3b --min-kappa 0.4

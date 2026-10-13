@@ -1,0 +1,39 @@
+# Drop into .gitlab-ci.yml in YOUR repository (or include it).
+# The target is a service the job itself starts, which is why --authorized applies.
+llm-security-scan:
+  image: python:3.11
+  timeout: 45m
+  services:
+    - name: $CI_REGISTRY_IMAGE/app:$CI_COMMIT_SHA
+      alias: app
+  variables:
+    OLLAMA_HOST: http://localhost:11434
+  cache:
+    key: ollama-models
+    paths:
+      - /root/.ollama/models
+  before_script:
+    - curl -fsSL https://ollama.com/install.sh | sh
+    - ollama serve &
+    - timeout 60 sh -c 'until curl -sf "$OLLAMA_HOST/api/version"; do sleep 2; done'
+    - ollama pull llama3.2:3b
+    - pip install --no-cache-dir llm-security-scanner-skill
+  script:
+    - |
+      llm-scanner-skill scan \
+        --target http://app:8000/chat --target-type url \
+        --judge-model llama3.2:3b \
+        --categories LLM01,LLM02,LLM05,LLM07 \
+        --severity medium \
+        --format json,sarif \
+        --fail-on-score 6.0 \
+        --output-dir reports \
+        --authorized \
+        | tee envelope.json
+  artifacts:
+    when: always
+    paths:
+      - reports/
+      - envelope.json
+    reports:
+      sast: reports/*/report.sarif

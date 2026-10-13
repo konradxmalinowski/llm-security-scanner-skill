@@ -1,0 +1,12 @@
+# Multi-target comparison: llm-scanner --targets targets.yml
+# Every non-loopback entry still needs the user's authorization.
+targets:
+  - name: local-app
+    target: http://localhost:8000/chat
+    target_type: url
+  - name: mistral-baseline
+    target: mistral:7b
+    target_type: ollama
+  - name: llama31-baseline
+    target: llama3.1:8b
+    target_type: ollama

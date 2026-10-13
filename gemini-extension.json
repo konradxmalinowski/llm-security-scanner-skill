@@ -1,0 +1,27 @@
+{
+  "name": "llm-security-scanner",
+  "version": "0.1.0",
+  "description": "Scan LLM-backed applications you operate against the OWASP Top 10 for LLMs, interpret findings by evidence class, and remediate them. Wraps the llm-security-scanner CLI with a local Ollama judge.",
+  "contextFileName": "GEMINI.md",
+  "mcpServers": {
+    "llm-security-scanner": {
+      "command": "llm-scanner-skill",
+      "args": ["mcp"],
+      "cwd": "${extensionPath}"
+    }
+  },
+  "settings": [
+    {
+      "name": "Ollama host",
+      "description": "Where the Ollama daemon used for the AI judge is reachable. Default: http://localhost:11434",
+      "envVar": "OLLAMA_HOST",
+      "sensitive": false
+    },
+    {
+      "name": "Scanner binary override",
+      "description": "Optional. Explicit command that runs llm-scanner, e.g. a path inside a pinned virtualenv or a 'docker run' shim. Leave empty to auto-detect.",
+      "envVar": "LLM_SCANNER_BIN",
+      "sensitive": false
+    }
+  ]
+}

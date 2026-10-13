@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Scan output — reports transcribe target responses and must never be committed
+reports/
+*.sarif
+scan-envelope.json
+
+# Skill installs created by `llm-scanner-skill install --scope project`
+/.agents/
+/.claude/skills/
+/.gemini/skills/
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store

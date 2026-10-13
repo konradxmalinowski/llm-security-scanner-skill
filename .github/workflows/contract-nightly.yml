@@ -1,0 +1,67 @@
+name: Scanner contract (nightly)
+
+# The skill depends on llm-security-scanner's CLI and report shape. A new scanner
+# release can break that contract without any commit in this repository, so the
+# contract tests run against the LATEST scanner on a schedule and open an issue if
+# they fail.
+on:
+  schedule:
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - run: pip install uv && uv pip install -e ".[dev]" --system
+
+      - name: Upgrade to the latest scanner release
+        run: uv pip install --system --upgrade llm-security-scanner
+
+      - name: Record the version
+        id: ver
+        run: |
+          V=$(python -c "from importlib.metadata import version; print(version('llm-security-scanner'))")
+          echo "scanner=$V" >> "$GITHUB_OUTPUT"
+          echo "Testing against llm-security-scanner==$V"
+
+      - name: Contract tests
+        id: contract
+        run: pytest tests/test_contract.py -q
+
+      - name: Open an issue when the contract breaks
+        if: failure() && steps.contract.outcome == 'failure'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const version = '${{ steps.ver.outputs.scanner }}';
+            const title = `Scanner contract broken against llm-security-scanner==${version}`;
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'contract-break',
+            });
+            if (existing.data.some(i => i.title === title)) return;
+            await github.rest.issues.create({
+              owner: context.repo.owner, repo: context.repo.repo,
+              title,
+              labels: ['contract-break'],
+              body: [
+                `The nightly contract run failed against \`llm-security-scanner==${version}\`.`,
+                '',
+                'The skill layer makes assumptions about the scanner that no longer hold',
+                '(CLI flags, enum values, config keys, or report fields).',
+                '',
+                `[Failed run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`,
+              ].join('\n'),
+            });

@@ -1,0 +1,9 @@
+# Measuring a local base model's susceptibility.
+# target and judge_model MUST differ -- a model may not judge itself.
+# This tests the MODEL, not your application's prompt, retrieval, tools or output handling.
+target: mistral:7b
+target_type: ollama
+judge_model: llama3.2:3b
+categories: [LLM01, LLM07, LLM09]
+formats: [json, html]
+output_dir: ./reports

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "llm-security-scanner": {
+      "command": "llm-scanner-skill",
+      "args": ["mcp"]
+    }
+  }
+}

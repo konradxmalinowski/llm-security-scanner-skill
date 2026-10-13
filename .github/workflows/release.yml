@@ -1,0 +1,83 @@
+name: Release to PyPI
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Build sdist and wheel
+        run: |
+          pip install --no-cache-dir build
+          python -m build
+
+      - name: Verify tag matches package version
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          PKG_VERSION="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')"
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match pyproject.toml version $PKG_VERSION" >&2
+            exit 1
+          fi
+
+      - name: Verify the version is consistent across every manifest
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          fail=0
+          check () {
+            if [ "$2" != "$TAG_VERSION" ]; then
+              echo "$1 declares version $2, expected $TAG_VERSION" >&2
+              fail=1
+            fi
+          }
+          check ".claude-plugin/plugin.json" "$(python -c 'import json;print(json.load(open(".claude-plugin/plugin.json"))["version"])')"
+          check "gemini-extension.json"      "$(python -c 'import json;print(json.load(open("gemini-extension.json"))["version"])')"
+          check "src/llm_scanner_skill/__init__.py" "$(python -c 'import re;print(re.search(r"__version__ = \"([^\"]+)\"", open("src/llm_scanner_skill/__init__.py").read()).group(1))')"
+          check "skills/llm-security-scan/SKILL.md" "$(python -c '
+          import yaml
+          text = open("skills/llm-security-scan/SKILL.md").read()
+          print(yaml.safe_load(text.split("---")[1])["metadata"]["version"])
+          ')"
+          exit $fail
+
+      - name: Verify the wheel bundles the skill
+        run: |
+          python - <<'PY'
+          import glob, zipfile, sys
+          wheel = glob.glob("dist/*.whl")[0]
+          names = zipfile.ZipFile(wheel).namelist()
+          needed = "llm_scanner_skill/skill_bundle/llm-security-scan/SKILL.md"
+          if needed not in names:
+              print(f"{wheel} is missing {needed}", file=sys.stderr)
+              sys.exit(1)
+          print(f"{wheel} bundles the skill ({len(names)} files)")
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write # PyPI trusted publishing (OIDC) — no API token secret needed
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
